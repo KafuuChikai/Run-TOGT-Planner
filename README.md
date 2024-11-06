@@ -18,7 +18,7 @@ With this package, you can generate random racetracks and plan paths using the *
 
 ```bash
 cd ${YOUR_TOGT_PLANNER_PATH}
-git clone https://github.com/YamakenElf/Run-TOGT-Planner/
+git clone https://github.com/KafuuChikai/Run-TOGT-Planner.git
 ```
 
 #### 3. Modify `CMakeLists.txt`
@@ -26,7 +26,7 @@ git clone https://github.com/YamakenElf/Run-TOGT-Planner/
 Add the following code after line 255:
 
 ```cmake
-add_executable(planners run_togt_planner/traj_planner/traj_planner_togt.cpp)
+add_executable(planners Run-TOGT-Planner/traj_planner/traj_planner_togt.cpp)
 target_compile_options(planners PRIVATE
   -fno-finite-math-only
   -Wall                   # Show all warnings
@@ -64,7 +64,7 @@ make
 #### 5. Run the Example Script
 
 ```bash
-python ${YOUR_TOGT_PLANNER_PATH}/run_togt_planner/run_traj_planner.py
+python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/run_traj_planner.py
 ```
 
 ## Tools
