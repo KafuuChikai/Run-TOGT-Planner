@@ -8,7 +8,7 @@ from typing import List, Union
 class BaseShape:
     def __init__(self, 
                  gate_type: str):
-        self.gate_type = gate_type
+        self.type = gate_type
 
     def get_shape_info(self) -> dict:
         return vars(self)

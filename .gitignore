@@ -1,0 +1,22 @@
+# VScode stuff
+.vscode/*
+!.vscode/extensions.json
+
+# Build directory
+build/*
+resources/*
+
+# LLVM and Clang
+**/.cache
+**/checks.json
+
+# Compile Commands
+*/compile_commands.json
+*/.clangd
+
+# Trajectory files
+**/.csv
+
+# Python cache
+__pycache__/
+**/.pyc
