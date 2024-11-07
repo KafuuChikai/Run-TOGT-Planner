@@ -1,5 +1,6 @@
 import numpy as np
 from typing import List, Optional, Union
+from GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
 
 class State:
     def __init__(self, 
@@ -30,62 +31,26 @@ class State:
             'euler': self.euler
         }
 
-class Gate:
-    def __init__(self, 
-                 gate_type: str, 
-                 name: str, 
-                 position: Union[List[float], np.ndarray], 
-                 rpy: Union[List[float], np.ndarray], 
-                 width: float, 
-                 height: float, 
-                 margin: float, 
-                 length: float, 
-                 midpoints: int, 
-                 stationary: bool):
-        self.gate_type = gate_type
-        self.name = name
-        self.position = position
-        self.rpy = rpy
-        self.width = width
-        self.height = height
-        self.margin = margin
-        self.length = length
-        self.midpoints = midpoints
-        self.stationary = stationary
+# class Gate:
+#     def __init__(self, 
+#                  gate_shape: GateShape, 
+#                  position: Union[List[float], np.ndarray], 
+#                  stationary: bool, 
+#                  name: Optional[str]):
+#         self.gate_type = gate_shape
+#         self.name = name
+#         self.position = position if isinstance(position, list) else position.tolist()
+#         self.stationary = stationary
 
-    def to_dict(self):
-        return {
-            'type': self.gate_type,
-            'name': self.name,
-            'position': self.position,
-            'rpy': self.rpy,
-            'width': self.width,
-            'height': self.height,
-            'margin': self.margin,
-            'length': self.length,
-            'midpoints': self.midpoints,
-            'stationary': self.stationary
-        }
-
-# init_state = State(
-#     pos=[-5.0, 4.5, 1.2],
-#     vel=[0.0, 0.0, 0.0],
-#     acc=[0.0, 0.0, 0.0],
-#     jer=[0.0, 0.0, 0.0],
-#     rot=[1.0, 0.0, 0.0, 0.0],
-#     cthrustmass=9.8066,
-#     euler=[0.0, 0.0, 0.0]
-# )
-
-# end_state = State(
-#     pos=[4.75, -0.9, 1.2],
-#     vel=[0.0, 0.0, 0.0],
-#     acc=[0.0, 0.0, 0.0],
-#     jer=[0.0, 0.0, 0.0],
-#     rot=[1.0, 0.0, 0.0, 0.0],
-#     cthrustmass=9.8066,
-#     euler=[0.0, 0.0, 0.0]
-# )
+#     def to_dict(self) -> dict:
+#         data = {
+#             'type': self.gate_type.get_shape_info(),
+#             'position': self.position,
+#             'stationary': self.stationary
+#         }
+#         if self.name is not None:
+#             data['name'] = self.name
+#         return data
 
 # gate1 = Gate(
 #     gate_type='TrianglePrisma',
