@@ -65,8 +65,12 @@ hex_gate = create_gate(HexagonPrisma, [0.0, 0.0, 0.0], True, hex_kwargs, 'hex_ga
 
 state_kwargs = {
     'pos' : [0.0, 0.0, 0.0],
-    'jer' : [1.0, 1.0 ,1.0],
-    'cthrustmass' : 19.0
+    'vel' : [1.0, 0.0, 0.0],
+    'acc' : [2.0, 0.0, 0.0],
+    'jer' : [3.0, 0.0, 0.0],
+    'rot' : [4.0, 1.0 ,1.0],
+    'cthrustmass' : 5.0,
+    'euler' : [6.0, 1.0 ,1.0]
 }
 init_state = create_state(state_kwargs)
 # print(state.to_dict())
@@ -82,4 +86,4 @@ test_race.add_gate(pen_gate)
 test_race.add_gate(hex_gate)
 
 # print(test_race.to_dict())
-test_race.save_to_yaml(save_dir="track", overwrite=True)
+test_race.save_to_yaml_standard(save_dir="track", overwrite=True)
