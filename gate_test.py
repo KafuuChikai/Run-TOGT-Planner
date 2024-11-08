@@ -1,5 +1,6 @@
-from utils.RaceGenerator.GenerationTools import create_gate
+from utils.RaceGenerator.GenerationTools import create_state, create_gate
 from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
+from utils.RaceGenerator.RaceClass import RaceTrack
 
 ball_kwargs = {
     'radius': 0.5,
@@ -51,13 +52,34 @@ hex_kwargs = {
 hex_gate_no_name = create_gate(HexagonPrisma, [0.0, 0.0, 0.0], True, hex_kwargs)
 hex_gate = create_gate(HexagonPrisma, [0.0, 0.0, 0.0], True, hex_kwargs, 'hex_gate')
 
-print(ball_gate_no_name.to_dict())
-print(ball_gate.to_dict())
-print(tri_gate_no_name.to_dict())
-print(tri_gate.to_dict())
-print(rec_gate_no_name.to_dict())
-print(rec_gate.to_dict())
-print(pen_gate_no_name.to_dict())
-print(pen_gate.to_dict())
-print(hex_gate_no_name.to_dict())
-print(hex_gate.to_dict())
+# print(ball_gate_no_name.to_dict())
+# print(ball_gate.to_dict())
+# print(tri_gate_no_name.to_dict())
+# print(tri_gate.to_dict())
+# print(rec_gate_no_name.to_dict())
+# print(rec_gate.to_dict())
+# print(pen_gate_no_name.to_dict())
+# print(pen_gate.to_dict())
+# print(hex_gate_no_name.to_dict())
+# print(hex_gate.to_dict())
+
+state_kwargs = {
+    'pos' : [0.0, 0.0, 0.0],
+    'jer' : [1.0, 1.0 ,1.0],
+    'cthrustmass' : 19.0
+}
+init_state = create_state(state_kwargs)
+# print(state.to_dict())
+end_state = create_state(state_kwargs)
+
+test_race = RaceTrack(init_state=init_state,
+                      end_state=end_state,
+                      race_name='test')
+test_race.add_gate(ball_gate)
+test_race.add_gate(tri_gate)
+test_race.add_gate(rec_gate)
+test_race.add_gate(pen_gate)
+test_race.add_gate(hex_gate)
+
+# print(test_race.to_dict())
+test_race.save_to_yaml(save_dir="track", overwrite=True)

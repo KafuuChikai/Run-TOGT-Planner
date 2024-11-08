@@ -3,11 +3,18 @@ from typing import List, Optional, Union, Type
 from utils.RaceGenerator.GateShape import BaseShape, SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
 from utils.RaceGenerator.RaceClass import State, Gate
 
+def create_state(state_kwargs: dict) -> State:
+    missing_pos = True if 'pos' not in state_kwargs else False
+    if missing_pos:
+        raise ValueError("Missing parameters for State: pos")
+    
+    return State(**state_kwargs)
+
 def create_gate(gate_type: Type[BaseShape],
-                position : Union[List[float], np.ndarray],
-                stationary : bool,
-                shape_kwargs : dict,
-                name : Optional[str] = None) -> Gate:
+                position: Union[List[float], np.ndarray],
+                stationary: bool,
+                shape_kwargs: dict,
+                name: Optional[str] = None) -> Gate:
     shape_params = {
         'SingleBall': ['radius', 'margin'],
         'TrianglePrisma': ['rpy', 'length', 'midpoints', 'width', 'height', 'margin'],
