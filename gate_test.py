@@ -1,6 +1,6 @@
 from utils.RaceGenerator.GenerationTools import create_state, create_gate
 from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from utils.RaceGenerator.RaceClass import RaceTrack
+from utils.RaceGenerator.RaceTrack import RaceTrack
 
 ball_kwargs = {
     'radius': 0.5,
@@ -86,4 +86,11 @@ test_race.add_gate(pen_gate)
 test_race.add_gate(hex_gate)
 
 # print(test_race.to_dict())
-test_race.save_to_yaml_standard(save_dir="track", overwrite=True)
+# test_race.save_to_yaml(save_dir="track", overwrite=True, standard=False)
+test_race.save_to_yaml(save_dir="track", overwrite=True, standard=True, save_output=True)
+read_race = RaceTrack(init_state=init_state,
+                      end_state=end_state,
+                      race_name='test')
+read_race.load_from_yaml(load_dir="track/test.yaml")
+print(read_race.to_dict())
+read_race.save_to_yaml(save_dir="track", overwrite=True, standard=True, save_output=True)

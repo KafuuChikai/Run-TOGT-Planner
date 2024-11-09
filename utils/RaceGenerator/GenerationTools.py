@@ -1,7 +1,17 @@
 import numpy as np
 from typing import List, Optional, Union, Type
 from utils.RaceGenerator.GateShape import BaseShape, SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from utils.RaceGenerator.RaceClass import State, Gate
+from utils.RaceGenerator.BaseRaceClass import State, Gate
+
+def get_shape_class(gate_shape: str) -> BaseShape:
+    shape_classes = {
+        'SingleBall': SingleBall,
+        'TrianglePrisma': TrianglePrisma,
+        'RectanglePrisma': RectanglePrisma,
+        'PentagonPrisma': PentagonPrisma,
+        'HexagonPrisma': HexagonPrisma
+    }
+    return shape_classes[gate_shape]
 
 def create_state(state_kwargs: dict) -> State:
     missing_pos = True if 'pos' not in state_kwargs else False
@@ -10,7 +20,7 @@ def create_state(state_kwargs: dict) -> State:
     
     return State(**state_kwargs)
 
-def create_gate(gate_type: Type[BaseShape],
+def create_gate(gate_type: Union[Type[BaseShape], str],
                 position: Union[List[float], np.ndarray],
                 stationary: bool,
                 shape_kwargs: dict,
@@ -23,6 +33,8 @@ def create_gate(gate_type: Type[BaseShape],
         'HexagonPrisma': ['rpy', 'length', 'midpoints', 'side', 'margin']
     }
 
+    if isinstance(gate_type, str):
+        gate_type = get_shape_class(gate_type)
     gate_type_name = gate_type.__name__
 
     missing_params = [param for param in shape_params[gate_type_name] if param not in shape_kwargs]
@@ -33,36 +45,3 @@ def create_gate(gate_type: Type[BaseShape],
                 position=position, 
                 stationary=stationary, 
                 name=name)
-
-# def create_racetrack(init_state: State, end_state: State, gates: List[Gate]) -> dict:
-#     data = {
-#         'initState': init_state.to_dict(),
-#         'endState': end_state.to_dict(),
-#         'orders': [gate.name for gate in gates],
-#         **{gate.name: gate.to_dict() for gate in gates}
-#     }
-
-#     return data
-
-# gate1 = Gate(
-#     gate_type='TrianglePrisma',
-#     name='vicon_gate',
-#     position=[-1.1, -1.6, 3.6],
-#     rpy=[0.0, -90, 0.0],
-#     width=2.4,
-#     height=2.4,
-#     margin=0.0,
-#     length=0.0,
-#     midpoints=0,
-#     stationary=True
-# )
-
-# data = {
-#     'initState': init_state.to_dict(),
-#     'endState': end_state.to_dict(),
-#     'orders': ['Gate1', 'Gate2', 'Gate3', 'Gate4', 'Gate5', 'Gate6', 'Gate7'],
-#     'Gate1': gate1.to_dict()
-# }
-
-# with open('race_uzh_7g_multiprisma.yaml', 'w') as file:
-#     yaml.dump(data, file, default_flow_style=False)
