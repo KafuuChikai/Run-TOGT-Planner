@@ -37,7 +37,7 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 
 if __name__ == "__main__":
     # input parameters
-    BASEPATH = ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
+    BASEPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
     config_path = os.fspath("parameters/cpc")
     quad_name = "cpc"
     track_path = os.fspath("Run-TOGT-Planner/resources/racetrack")
