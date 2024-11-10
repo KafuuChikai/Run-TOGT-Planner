@@ -88,7 +88,7 @@ def read_racetrack():
     read_race = RaceTrack(init_state=init_state,
                         end_state=end_state,
                         race_name='example')
-    read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "resources/racetrack/race_uzh_7g_multiprisma.yaml"))
+    read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "resources/racetrack/example.yaml"))
     return read_race
 
 def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
@@ -121,7 +121,7 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 
 def plot_traj(traj_path, track_path):
     togt_plotter = RacePlotter(traj_path, track_path)
-    togt_plotter.plot(save_fig=True, fig_name="togt_traj", save_path=os.path.join(BASEPATH, "resources/figure/"))
+    togt_plotter.plot(save_fig=True, fig_name="example", save_path=os.path.join(BASEPATH, "resources/figure/"))
 
 if __name__ == "__main__":
     # input parameters
@@ -135,9 +135,9 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(BASEPATH, wpt_path), exist_ok=True)
 
     config_path = os.path.join(BASEPATH, config_path)
-    track_path = os.path.join(BASEPATH, track_path, 'test.yaml')
-    traj_path = os.path.join(BASEPATH, traj_path, 'togt_traj.csv')
-    wpt_path = os.path.join(BASEPATH, wpt_path, 'togt_wpt.yaml')
+    track_path = os.path.join(BASEPATH, track_path, 'example.yaml')
+    traj_path = os.path.join(BASEPATH, traj_path, 'example.csv')
+    wpt_path = os.path.join(BASEPATH, wpt_path, 'example.yaml')
 
     # Step 1: Create a racetrack
     create_racetrack()
