@@ -18,7 +18,6 @@ class BaseRaceClass:
                         dict: dict) -> CommentedMap:
         data = CommentedMap()
         for key in ordered_keys:
-            # data[key] = dict[key]
             value = dict[key]
             if isinstance(dict[key], list):
                 commented_seq = CommentedSeq(value)
