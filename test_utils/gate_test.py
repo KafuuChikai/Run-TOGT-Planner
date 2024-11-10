@@ -99,6 +99,6 @@ test_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "resources/racetrack"),ov
 read_race = RaceTrack(init_state=init_state,
                       end_state=end_state,
                       race_name='test')
-read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "resources/racetrack/race_uzh_7g_multiprisma.yaml"))
+read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "../resources/racetrack/race_uzh_7g_multiprisma.yaml"))
 print(read_race.to_dict())
 read_race.save_to_yaml(overwrite=True, standard=True, save_output=True)
