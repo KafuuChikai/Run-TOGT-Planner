@@ -43,7 +43,7 @@ class TrianglePrisma(BasePrisma):
                  midpoints: int, 
                  width: float, 
                  height: float, 
-                 margin: float,):
+                 margin: float):
         super().__init__('TrianglePrisma', rpy, length, midpoints)
         self.width = width
         self.height = height

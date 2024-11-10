@@ -2,6 +2,25 @@ import numpy as np
 from typing import List, Optional, Union, Type
 from utils.RaceGenerator.GateShape import BaseShape, SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
 from utils.RaceGenerator.BaseRaceClass import State, Gate
+from ruamel.yaml.scalarstring import SingleQuotedScalarString
+
+KEYS_TO_QUOTE = ['type', 'name']
+
+def quote_specific_keys(data: Union[dict, List[dict], str], 
+                        keys_to_quote: List[str] = KEYS_TO_QUOTE):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if key in keys_to_quote and isinstance(value, str):
+                data[key] = SingleQuotedScalarString(value)
+            elif isinstance(value, (dict, list)):
+                quote_specific_keys(value, keys_to_quote)
+    elif isinstance(data, list):
+        for idx, item in enumerate(data):
+            if isinstance(item, str):
+                data[idx] = SingleQuotedScalarString(item)
+            elif isinstance(item, (dict, list)):
+                quote_specific_keys(item, keys_to_quote)
+    return data
 
 def get_shape_class(gate_shape: str) -> BaseShape:
     shape_classes = {

@@ -1,34 +1,14 @@
 from typing import List, Optional, Union
-from utils.RaceGenerator.GateShape import BaseShape
 from utils.RaceGenerator.BaseRaceClass import BaseRaceClass, State, Gate
-from utils.RaceGenerator.GenerationTools import create_state, create_gate
+from utils.RaceGenerator.GenerationTools import create_state, create_gate, quote_specific_keys
 import os
 
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap, CommentedSeq
-from ruamel.yaml.scalarstring import SingleQuotedScalarString
 
 yaml = YAML()
 yaml.indent(mapping=2, sequence=4, offset=2)
 yaml.default_flow_style = False
-
-KEYS_TO_QUOTE = ['type', 'name']
-
-def quote_specific_keys(data: Union[dict, List[dict], str], 
-                        keys_to_quote: List[str] = KEYS_TO_QUOTE):
-    if isinstance(data, dict):
-        for key, value in data.items():
-            if key in keys_to_quote and isinstance(value, str):
-                data[key] = SingleQuotedScalarString(value)
-            elif isinstance(value, (dict, list)):
-                quote_specific_keys(value, keys_to_quote)
-    elif isinstance(data, list):
-        for idx, item in enumerate(data):
-            if isinstance(item, str):
-                data[idx] = SingleQuotedScalarString(item)
-            elif isinstance(item, (dict, list)):
-                quote_specific_keys(item, keys_to_quote)
-    return data
 
 class RaceTrack(BaseRaceClass):
     def __init__(self,
@@ -144,7 +124,7 @@ class RaceTrack(BaseRaceClass):
                 return False
             
     def load_from_yaml(self,
-                       load_dir: Optional[Union[os.PathLike, str]]) -> bool:
+                       load_dir: Optional[Union[os.PathLike, str]]):
         gate_param_list = ['type', 'name', 'position', 'stationary']
         load_dir = os.fspath(load_dir)
         self.race_name = os.path.splitext(os.path.basename(load_dir))[0]
