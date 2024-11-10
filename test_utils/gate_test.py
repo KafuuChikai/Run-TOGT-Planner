@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from utils.RaceGenerator.GenerationTools import create_state, create_gate
 from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
 from utils.RaceGenerator.RaceTrack import RaceTrack
@@ -87,11 +92,13 @@ test_race.add_gate(hex_gate)
 
 # print(test_race.to_dict())
 # test_race.save_to_yaml(save_dir="track", overwrite=True, standard=False)
-test_race.save_to_yaml(overwrite=True, standard=True, save_output=True)
+
+BASEPATH = os.path.abspath(__file__).split("test_utils/", 1)[0]
+
+test_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "resources/racetrack"),overwrite=True, standard=True, save_output=True)
 read_race = RaceTrack(init_state=init_state,
                       end_state=end_state,
                       race_name='test')
-# read_race.load_from_yaml(load_dir="track/test.yaml")
-read_race.load_from_yaml(load_dir="../resources/racetrack/race_uzh_7g_multiprisma.yaml")
+read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "resources/racetrack/race_uzh_7g_multiprisma.yaml"))
 print(read_race.to_dict())
 read_race.save_to_yaml(overwrite=True, standard=True, save_output=True)
