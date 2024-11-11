@@ -63,17 +63,54 @@ make
 
 #### 5. Run the Example Script
 
+- Show **predefined trajectory**
+
+
 ```bash
 python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/plan_race_example.py
+```
+
+- Show **random trajectory**
+
+
+```bash
+python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/random_race_example.py
 ```
 
 If you want to learn more, refer to [Tools](#Tools).
 
 ## Visualizations
 
+### 1. Predefined trajectory
+
 You can get a predefined trajectory below:
 
 ![plan_race_example](docs/plan_race_example.png)
+
+### 2. Random trajectories
+
+The random trajectory examples:
+
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/random_race_example/race_1.png" alt="race_1" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/random_race_example/race_2.png" alt="race_2" style="width:100%;"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/random_race_example/race_3.png" alt="race_3" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/random_race_example/race_4.png" alt="race_4" style="width:100%;"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/random_race_example/race_5.png" alt="race_5" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/random_race_example/race_6.png" alt="race_6" style="width:100%;"/></td>
+  </tr>
+</table>
 
 ## Tools
 

@@ -8,6 +8,7 @@ from ruamel.yaml.comments import CommentedMap, CommentedSeq
 
 yaml = YAML()
 yaml.indent(mapping=2, sequence=4, offset=2)
+yaml.width = 4096
 yaml.default_flow_style = False
 
 class RaceTrack(BaseRaceClass):
