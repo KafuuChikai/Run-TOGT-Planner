@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
-from utils.RaceGenerator.BaseRaceClass import BaseRaceClass, State, Gate
-from utils.RaceGenerator.GenerationTools import create_state, create_gate, quote_specific_keys
+from run_togt_planner.RaceGenerator.BaseRaceClass import BaseRaceClass, State, Gate
+from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate, quote_specific_keys
 import os
 
 from ruamel.yaml import YAML

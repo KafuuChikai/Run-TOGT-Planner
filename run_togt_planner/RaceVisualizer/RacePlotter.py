@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap
-from utils.RaceVisualizer.track import plot_track
+from run_togt_planner.RaceVisualizer.track import plot_track
 from typing import Union, Optional
 
 import os

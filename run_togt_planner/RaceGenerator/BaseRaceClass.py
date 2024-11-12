@@ -1,6 +1,6 @@
 import numpy as np
 from typing import List, Optional, Union
-from utils.RaceGenerator.GateShape import BaseShape
+from run_togt_planner.RaceGenerator.GateShape import BaseShape
 
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap, CommentedSeq

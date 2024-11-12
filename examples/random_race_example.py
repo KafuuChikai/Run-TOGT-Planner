@@ -1,8 +1,8 @@
 import os
-from utils.RaceGenerator.GenerationTools import create_state, create_gate
-from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from utils.RaceGenerator.RaceTrack import RaceTrack
-from utils.RaceVisualizer.RacePlotter import RacePlotter
+from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate
+from run_togt_planner.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
+from run_togt_planner.RaceGenerator.RaceTrack import RaceTrack
+from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 import subprocess
 import random
 from typing import Optional
@@ -94,28 +94,31 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
     else:
         print(f"{result.stdout}")
 
-def plot_traj(traj_path, track_path):
+def plot_traj(traj_path, track_path, fig_path):
     togt_plotter = RacePlotter(traj_path, track_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                       save_fig=True, 
                       fig_name="random_example", 
-                      save_path=os.path.join(BASEPATH, "resources/figure/"))
+                      save_path=fig_path)
 
 if __name__ == "__main__":
     # input parameters
-    config_path = os.fspath("../parameters/cpc")
+    config_path = os.path.join(ROOTPATH, "parameters/cpc")
     quad_name = "cpc"
-    track_path = os.fspath("resources/racetrack")
-    traj_path = os.fspath("resources/trajectory")
-    wpt_path = os.fspath("resources/trajectory")
+    track_path = os.fspath("../resources/racetrack")
+    traj_path = os.fspath("../resources/trajectory")
+    wpt_path = os.fspath("../resources/trajectory")
+    fig_path = os.fspath("../resources/figure")
 
     os.makedirs(os.path.join(BASEPATH, traj_path), exist_ok=True)
     os.makedirs(os.path.join(BASEPATH, wpt_path), exist_ok=True)
 
     config_path = os.path.join(BASEPATH, config_path)
-    track_path = os.path.join(BASEPATH, track_path, 'random_example.yaml')
+    track_path = os.path.join(BASEPATH, track_path)
+    track_file_name = os.path.join(track_path, 'random_example.yaml')
     traj_path = os.path.join(BASEPATH, traj_path, 'random_example.csv')
     wpt_path = os.path.join(BASEPATH, wpt_path, 'random_example.yaml')
+    fig_path = os.path.join(BASEPATH, fig_path)
 
     ball_shape_kwargs = {
         'radius': 1.0,
@@ -126,13 +129,13 @@ if __name__ == "__main__":
     random_race = create_random_racetrack_wp(gate_num=10, 
                                              shape_kwargs=ball_shape_kwargs, 
                                              name='random_example')
-    random_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "resources/racetrack"),
+    random_race.save_to_yaml(save_dir=track_path,
                              overwrite=True, 
                              standard=True, 
                              save_output=True)
 
     # Step 2: Run the trajectory planner
-    run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path)
+    run_traj_planner(config_path, quad_name, track_file_name, traj_path, wpt_path)
 
     # Step 3: Plot the trajectory
-    plot_traj(traj_path, track_path)
+    plot_traj(traj_path, track_file_name, fig_path)
