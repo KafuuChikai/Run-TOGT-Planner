@@ -3,9 +3,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from utils.RaceGenerator.GenerationTools import create_state, create_gate
-from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from utils.RaceGenerator.RaceTrack import RaceTrack
+from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate
+from run_togt_planner.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
+from run_togt_planner.RaceGenerator.RaceTrack import RaceTrack
 
 ball_kwargs = {
     'radius': 0.5,

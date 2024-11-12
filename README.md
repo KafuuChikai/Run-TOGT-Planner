@@ -6,19 +6,30 @@ With this package, you can generate random racetracks and plan paths using the *
 
 ## Installations
 
-#### 0. Requirements
-
-**Python Packages:** `numpy`, `pyyaml`, `ruamel.yaml`
-
 #### 1. Install TOGT-Planner and Build
 
 **Note:** Please check out to the commit from **May 15, 2024** (commit `f69f3fc9143b02b58bd6a66dc12a531395bf5317`, [Correct plotting bugs](https://github.com/FSC-Lab/TOGT-Planner/commit/f69f3fc9143b02b58bd6a66dc12a531395bf5317)) for a stable version.
 
-#### 2. Clone the Repository
+#### 2. Clone the Repository and install the package
 
 ```bash
 cd ${YOUR_TOGT_PLANNER_PATH}
 git clone https://github.com/KafuuChikai/Run-TOGT-Planner.git
+cd Run-TOGT-Planner/
+```
+
+It is recommended to use a **virtual environment**.
+
+```bash
+conda create -n togt_env python=3.8
+conda activate togt_env
+```
+
+**Install the package**:
+
+```
+pip install --upgrade pip
+pip install -e .
 ```
 
 #### 3. Modify `CMakeLists.txt`

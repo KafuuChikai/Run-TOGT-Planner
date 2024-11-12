@@ -1,8 +1,8 @@
 import os
-from utils.RaceGenerator.GenerationTools import create_state, create_gate
-from utils.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from utils.RaceGenerator.RaceTrack import RaceTrack
-from utils.RaceVisualizer.RacePlotter import RacePlotter
+from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate
+from run_togt_planner.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
+from run_togt_planner.RaceGenerator.RaceTrack import RaceTrack
+from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 import subprocess
 
 ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
@@ -72,7 +72,7 @@ def create_racetrack():
     test_race.add_gate(pen_gate)
     test_race.add_gate(hex_gate)
 
-    test_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "resources/racetrack"),
+    test_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "../resources/racetrack"),
                         overwrite=True, 
                         standard=True, 
                         save_output=True)
@@ -88,7 +88,7 @@ def read_racetrack():
     read_race = RaceTrack(init_state=init_state,
                         end_state=end_state,
                         race_name='example')
-    read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "resources/racetrack/example.yaml"))
+    read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "../resources/racetrack/example.yaml"))
     return read_race
 
 def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
@@ -121,15 +121,15 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 
 def plot_traj(traj_path, track_path):
     togt_plotter = RacePlotter(traj_path, track_path)
-    togt_plotter.plot(save_fig=True, fig_name="example", save_path=os.path.join(BASEPATH, "resources/figure/"))
+    togt_plotter.plot(save_fig=True, fig_name="example", save_path=os.path.join(BASEPATH, "../resources/figure/"))
 
 if __name__ == "__main__":
     # input parameters
-    config_path = os.fspath("../parameters/cpc")
+    config_path = os.path.join(ROOTPATH, "parameters/cpc")
     quad_name = "cpc"
-    track_path = os.fspath("resources/racetrack")
-    traj_path = os.fspath("resources/trajectory")
-    wpt_path = os.fspath("resources/trajectory")
+    track_path = os.fspath("../resources/racetrack")
+    traj_path = os.fspath("../resources/trajectory")
+    wpt_path = os.fspath("../resources/trajectory")
 
     os.makedirs(os.path.join(BASEPATH, traj_path), exist_ok=True)
     os.makedirs(os.path.join(BASEPATH, wpt_path), exist_ok=True)

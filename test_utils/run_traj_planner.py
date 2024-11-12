@@ -3,7 +3,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from utils.RaceVisualizer.RacePlotter import RacePlotter
+from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 
 def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
     # get the path to c++ program
