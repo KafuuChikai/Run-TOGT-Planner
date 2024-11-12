@@ -6,7 +6,13 @@ With this package, you can generate random racetracks and plan paths using the *
 
 ## Installations
 
-#### 1. Install TOGT-Planner and Build
+#### 1. Clone TOGT-Planner
+
+```bash
+git clone https://github.com/FSC-Lab/TOGT-Planner.git
+cd TOGT-Planner/
+git checkout f69f3fc9143b02b58bd6a66dc12a531395bf5317
+```
 
 **Note:** Please check out to the commit from **May 15, 2024** (commit `f69f3fc9143b02b58bd6a66dc12a531395bf5317`, [Correct plotting bugs](https://github.com/FSC-Lab/TOGT-Planner/commit/f69f3fc9143b02b58bd6a66dc12a531395bf5317)) for a stable version.
 
@@ -18,23 +24,23 @@ git clone https://github.com/KafuuChikai/Run-TOGT-Planner.git
 cd Run-TOGT-Planner/
 ```
 
-It is recommended to use a **virtual environment**.
+It is recommended to use **Conda** to create a virtual environment. *If you do not use Conda, ensure Poetry is installed.*
 
 ```bash
 conda create -n togt_env python=3.8
 conda activate togt_env
 ```
 
-**Install the package**:
+**Install the package**
 
-```
+```bash
 pip install --upgrade pip
 pip install -e .
 ```
 
 #### 3. Modify `CMakeLists.txt`
 
-Add the following code after line 255:
+Add the following code after line 247:
 
 ```cmake
 add_executable(planners Run-TOGT-Planner/traj_planner/traj_planner_togt.cpp)
@@ -64,10 +70,12 @@ target_link_libraries(planners
 
 #### 4. Build the Project
 
-Navigate to the build directory, configure the project, and compile:
+Navigate to the **TOGT-Planner** directory, configure the project, and compile:
 
 ```bash
-cd ${YOUR_TOGT_PLANNER_PATH}/build
+cd ${YOUR_TOGT_PLANNER_PATH}/
+mkdir build
+cd build
 cmake ..
 make
 ```
@@ -78,14 +86,14 @@ make
 
 
 ```bash
-python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/plan_race_example.py
+python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/examples/plan_race_example.py
 ```
 
 - Show **random trajectory**
 
 
 ```bash
-python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/random_race_example.py
+python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/examples/random_race_example.py
 ```
 
 If you want to learn more, refer to [Tools](#Tools).
