@@ -39,7 +39,12 @@ def plot_track(ax, track_file):
             r = g['radius'] - g['margin']
             a = np.linspace(0, 2*np.pi)
             ax.plot(position[0]+r*np.cos(a),
-                    position[1]+r*np.sin(a), '-', **args)
+                    position[1]+r*np.sin(a),
+                    position[2]+r*np.sin(a), '-', **args)
+            # keep center
+            ax.plot(position[0]+0.05*np.cos(a),
+                    position[1]+0.05*np.sin(a),
+                    position[2]+0.05*np.sin(a), '-', **args)
 
         elif g['type'] == 'TrianglePrisma':
             position = g['position']
