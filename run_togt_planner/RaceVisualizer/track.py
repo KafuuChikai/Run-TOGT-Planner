@@ -18,7 +18,7 @@ def rpy_to_rotation_matrix(rpy):
     return R
 
 
-def plot_track(ax, track_file):
+def plot_track(ax, track_file, radius=None, margin=None):
     with open(track_file) as fp:
         track = yaml.safe_load(fp)
 
@@ -37,14 +37,13 @@ def plot_track(ax, track_file):
         if g['type'] == 'SingleBall':
             position = g['position']
             r = g['radius'] - g['margin']
+            if radius is not None and margin is not None:
+                r = np.clip(radius - margin, 0, None)
             a = np.linspace(0, 2*np.pi)
             ax.plot(position[0]+r*np.cos(a),
-                    position[1]+r*np.sin(a),
-                    position[2]+r*np.sin(a), '-', **args)
-            # keep center
-            ax.plot(position[0]+0.05*np.cos(a),
-                    position[1]+0.05*np.sin(a),
-                    position[2]+0.05*np.sin(a), '-', **args)
+                    position[1]+r*np.sin(a), '-', **args)
+            # draw center
+            ax.scatter(position[0], position[1], color='black', s=50)
 
         elif g['type'] == 'TrianglePrisma':
             position = g['position']
@@ -116,3 +115,35 @@ def plot_track(ax, track_file):
 
         else:
             raise ValueError('Unrecognized gate: ' + g['type'])
+        
+def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
+    if color is None:
+        color = 'r'
+
+    with open(track_file) as fp:
+        track = yaml.safe_load(fp)
+
+    for g in track['orders']:
+        g = track[g]
+
+        if g['type'] == 'FreeCorridor':
+            raise NotImplementedError("Not support plotting FreeCorridor gate")
+
+        if g['type'] == 'SingleBall':
+            position = g['position']
+            r = g['radius'] - g['margin']
+            if radius is not None and margin is not None:
+                r = np.clip(radius - margin, 0, None)
+
+            # create sphere
+            u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
+            x = position[0] + r * np.cos(u) * np.sin(v)
+            y = position[1] + r * np.sin(u) * np.sin(v)
+            z = position[2] + r * np.cos(v)
+            # draw sphere
+            ax.plot_surface(x, y, z, color=color, alpha=0.3, edgecolor='none')
+            # draw center
+            ax.scatter(position[0], position[1], position[2], color='black', s=50)
+            
+        else:
+            raise ValueError('Unsupported gate: ' + g['type'])

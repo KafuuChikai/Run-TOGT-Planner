@@ -26,4 +26,13 @@ togt_plotter = RacePlotter(traj_path, track_path)
 togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                     save_fig=True, 
                     fig_name="race_uzh_19wp", 
-                    save_path=fig_path)
+                    save_path=fig_path,
+                    radius=1.0,
+                    margin=0.0)
+togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
+                    save_fig=True, 
+                    fig_name="race_uzh_19wp", 
+                    save_path=fig_path,
+                    radius=1.0,
+                    margin=0.0)
+plt.show()
