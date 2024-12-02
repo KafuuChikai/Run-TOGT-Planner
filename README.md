@@ -1,5 +1,12 @@
 # Run-TOGT-Planner
 
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/cover/example_3d.png" alt="example_3d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/cover/race_uzh_19wp_3d.png" alt="race_uzh_19wp_3d" style="width:100%;"/></td>
+  </tr>
+</table>
+
 This Python package provides an interface to run the [**Time-Optimal Gate-Traversing (TOGT) Planner**](https://github.com/FSC-Lab/TOGT-Planner), originally a C++ project.
 
 With this package, you can generate random racetracks and plan paths using the **TOGT Planner**. It supports looping to generate a large number of high-quality trajectories that prioritize dynamic feasibility.
@@ -128,6 +135,17 @@ The random trajectory examples:
   <tr>
     <td style="width:50%;"><img src="docs/random_race_example/race_5.png" alt="race_5" style="width:100%;"/></td>
     <td style="width:50%;"><img src="docs/random_race_example/race_6.png" alt="race_6" style="width:100%;"/></td>
+  </tr>
+</table>
+
+### 3. 3D trajectories with Tube
+
+**Update**: Plot 3D trajectories and visulize with Tube.
+
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/3d_tube/random_example_2d.png" alt="random_example_2d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/3d_tube/random_example_3d.png" alt="random_example_3d" style="width:70%;"/></td>
   </tr>
 </table>
 
