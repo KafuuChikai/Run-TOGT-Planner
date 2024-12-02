@@ -145,7 +145,7 @@ The random trajectory examples:
 <table>
   <tr>
     <td style="width:50%;"><img src="docs/3d_tube/random_example_2d.png" alt="random_example_2d" style="width:100%;"/></td>
-    <td style="width:50%;"><img src="docs/3d_tube/random_example_3d.png" alt="random_example_3d" style="width:70%;"/></td>
+    <td style="width:50%;"><img src="docs/3d_tube/random_example_3d.png" alt="random_example_3d" style="width:100%;"/></td>
   </tr>
 </table>
 
