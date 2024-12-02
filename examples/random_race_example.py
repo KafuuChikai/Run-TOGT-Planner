@@ -19,17 +19,17 @@ def create_random_racetrack_wp(gate_num: int,
     
     # Define initial and end states
     position = [
-        random.uniform(-16.0, 16.0),  # x-coordinate
-        random.uniform(-16.0, 16.0),  # y-coordinate
-        random.uniform(0.0, 5.0)       # z-coordinate
+        random.uniform(-8.0, 8.0),  # x-coordinate
+        random.uniform(-8.0, 8.0),  # y-coordinate
+        random.uniform(0.0, 16.0)       # z-coordinate
     ]
     init_state = create_state({
         'pos': position,
     })
     position = [
-        random.uniform(-16.0, 16.0),  # x-coordinate
-        random.uniform(-16.0, 16.0),  # y-coordinate
-        random.uniform(0.0, 5.0)       # z-coordinate
+        random.uniform(-8.0, 8.0),  # x-coordinate
+        random.uniform(-8.0, 8.0),  # y-coordinate
+        random.uniform(0.0, 16.0)       # z-coordinate
     ]
     end_state = create_state({
         'pos': position,
@@ -45,9 +45,9 @@ def create_random_racetrack_wp(gate_num: int,
     for i in range(gate_num):        
         # Generate random position within a predefined range
         position = [
-            random.uniform(-16.0, 16.0),  # x-coordinate
-            random.uniform(-16.0, 16.0),  # y-coordinate
-            random.uniform(0.0, 5.0)       # z-coordinate
+            random.uniform(-8.0, 8.0),  # x-coordinate
+            random.uniform(-8.0, 8.0),  # y-coordinate
+            random.uniform(0.0, 16.0)       # z-coordinate
         ]
         
         # Randomly decide if the gate is stationary
@@ -98,8 +98,17 @@ def plot_traj(traj_path, track_path, fig_path):
     togt_plotter = RacePlotter(traj_path, track_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                       save_fig=True, 
-                      fig_name="random_example", 
-                      save_path=fig_path)
+                      fig_name="random_example_2d", 
+                      save_path=fig_path,
+                      draw_tube=True)
+    togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
+                      save_fig=True, 
+                      fig_name="random_example_3d", 
+                      save_path=fig_path,
+                      radius=1.0,
+                      margin=0.0,
+                      draw_tube=True)
+    togt_plotter.plot_show()
 
 if __name__ == "__main__":
     # input parameters
@@ -121,8 +130,8 @@ if __name__ == "__main__":
     fig_path = os.path.join(BASEPATH, fig_path)
 
     ball_shape_kwargs = {
-        'radius': 1.0,
-        'margin': 0.0
+        'radius': 0.3,
+        'margin': 0.3
     }
 
     # Step 1: Create a racetrack

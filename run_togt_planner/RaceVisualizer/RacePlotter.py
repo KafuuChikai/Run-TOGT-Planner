@@ -54,8 +54,11 @@ class RacePlotter:
         tangents /= np.linalg.norm(tangents, axis=1).reshape(-1, 1)
         return tangents
     
-    def sigmoid(x, bias, max_scale):
+    def sigmoid(self, x, bias, max_scale):
         return 1 + max_scale*(-1/(1 + np.exp(bias)) + 1/(1 + np.exp(-(x - bias))))/(1-1/(1 + np.exp(bias)))
+    
+    def plot_show(self):
+        plt.show()
 
     def get_line_tube(self, ps, tube_radius):
         # create tube parameters
@@ -92,7 +95,7 @@ class RacePlotter:
         
         return tube_x, tube_y, tube_z
     
-    def get_line_tube(self, ps, tube_radius, tube_tore, bias, max_scale):
+    def get_sig_tube(self, ps, tube_radius, tube_tore, bias, max_scale):
         # create tube parameters
         num_points = len(ps)
         theta = np.linspace(0, 2 * np.pi, 20)
@@ -134,7 +137,9 @@ class RacePlotter:
              fig_name: Optional[str] = None,
              radius: Optional[float] = None,
              margin: Optional[float] = None,
-             sig_tube: bool = False):
+             draw_tube: bool = False,
+             sig_tube: bool = False,
+             tube_color: Optional[str] = None):
         fig = plt.figure(figsize=(13, 7))
 
         ts = np.linspace(self.t[0], self.t[-1], 5000)
@@ -157,19 +162,23 @@ class RacePlotter:
         b = 0.0 * (1-vt) + 0.0 * vt
         rgb = np.array([r, g, b]).T
 
-        path_data = []
-        codes = []
-        for i, p in enumerate(ps):
-            if i % 10 == 0:
-                circle = plt.Circle((p[0], p[1]), 1.0, edgecolor='none', facecolor='none')
-                vertices = circle.get_path().transformed(circle.get_transform()).vertices
-                path_data.extend(vertices)
-                codes.extend([Path.MOVETO] + [Path.LINETO] * (len(vertices) - 2) + [Path.CLOSEPOLY])
+        if draw_tube:
+            path_data = []
+            codes = []
+            for i, p in enumerate(ps):
+                if i % 10 == 0:
+                    circle = plt.Circle((p[0], p[1]), 1.0, edgecolor='none', facecolor='none')
+                    vertices = circle.get_path().transformed(circle.get_transform()).vertices
+                    path_data.extend(vertices)
+                    codes.extend([Path.MOVETO] + [Path.LINETO] * (len(vertices) - 2) + [Path.CLOSEPOLY])
 
-        path_data = np.array(path_data)
-        path = Path(path_data, codes)
-        patch = PathPatch(path, facecolor='purple', edgecolor='purple', alpha=0.15)
-        plt.gca().add_patch(patch)
+            path_data = np.array(path_data)
+            path = Path(path_data, codes)
+
+            if tube_color is None:
+                tube_color = 'purple'
+            patch = PathPatch(path, facecolor=tube_color, edgecolor=tube_color, alpha=0.15)
+            plt.gca().add_patch(patch)
 
         plt.scatter(ps[:, 0], ps[:, 1], s=5,
                     c=vt, cmap=cmap)
@@ -195,7 +204,10 @@ class RacePlotter:
                fig_name: Optional[str] = None,
                radius: Optional[float] = None,
                margin: Optional[float] = None,
-               sig_tube: bool = False):
+               draw_tube: bool = False,
+               sig_tube: bool = False,
+               gate_color: Optional[str] = None,
+               tube_color: Optional[str] = None):
         fig = plt.figure(figsize=(13, 7))
         ax = fig.add_subplot(111, projection='3d')
 
@@ -215,16 +227,19 @@ class RacePlotter:
         vt = np.minimum(np.maximum(vs, v0), v1)
         
         # draw tube
-        tube_radius = 1.0
-        if not sig_tube:
-            tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
-        ax.plot_surface(tube_x, tube_y, tube_z, color='purple', alpha=0.05, edgecolor='purple')
+        if draw_tube:
+            tube_radius = 1.0
+            if tube_color is None:
+                tube_color = 'purple'
+            if not sig_tube:
+                tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
+            ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=0.05, edgecolor=tube_color)
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
         plt.colorbar(sc).ax.set_ylabel('Speed [m/s]')
 
-        plot_track_3d(plt.gca(), self.track_file, radius=radius, margin=margin)
+        plot_track_3d(plt.gca(), self.track_file, radius=radius, margin=margin, color=gate_color)
 
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')

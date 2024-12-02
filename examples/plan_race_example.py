@@ -12,14 +12,14 @@ def create_racetrack():
     # Define gate parameters
     ball_kwargs = {
         'radius': 0.5,
-        'margin': 0.0
+        'margin': 0.5
     }
 
     tri_kwargs = {
         'rpy': [0.0, -90, 0.0],
         'width': 2.4,
         'height': 2.4,
-        'margin': 0.0,
+        'margin': 2.4,
         'length': 0.0,
         'midpoints': 0
     }
@@ -28,8 +28,8 @@ def create_racetrack():
         'rpy': [0.0, -90, 0.0],
         'width': 2.4,
         'height': 2.4,
-        'marginW': 0.0,
-        'marginH': 0.0,
+        'marginW': 2.4,
+        'marginH': 2.4,
         'length': 0.0,
         'midpoints': 0
     }
@@ -37,7 +37,7 @@ def create_racetrack():
     pen_kwargs = {
         'rpy': [0.0, -90, 0.0],
         'radius': 2.4,
-        'margin': 0.0,
+        'margin': 2.4,
         'length': 16.0,
         'midpoints': 0
     }
@@ -45,7 +45,7 @@ def create_racetrack():
     hex_kwargs = {
         'rpy': [0.0, -90, 0.0],
         'side': 1.5,
-        'margin': 0.0,
+        'margin': 1.5,
         'length': 0.0,
         'midpoints': 0
     }
@@ -121,7 +121,11 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 
 def plot_traj(traj_path, track_path):
     togt_plotter = RacePlotter(traj_path, track_path)
-    togt_plotter.plot(save_fig=True, fig_name="example", save_path=os.path.join(BASEPATH, "../resources/figure/"))
+    togt_plotter.plot(save_fig=True, fig_name="example_2d", save_path=os.path.join(BASEPATH, "../resources/figure/"), 
+                      draw_tube=True, tube_color='green')
+    togt_plotter.plot3d(save_fig=True, fig_name="example_3d", save_path=os.path.join(BASEPATH, "../resources/figure/"),
+                        radius=0.5, margin=0.0, gate_color='blue', draw_tube=True, tube_color='green')
+    togt_plotter.plot_show()
 
 if __name__ == "__main__":
     # input parameters
