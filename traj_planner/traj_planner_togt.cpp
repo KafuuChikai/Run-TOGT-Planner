@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
   MincoSnapTrajectory traj = raceplanner->getTrajectory();
   traj.save(traj_path);  
-  traj.saveSegments(wpt_path, 1);
+  traj.saveAllWaypoints(wpt_path);
 
   return 0;
 }

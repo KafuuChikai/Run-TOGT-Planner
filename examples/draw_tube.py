@@ -1,12 +1,9 @@
 import os
-from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate
-from run_togt_planner.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
-from run_togt_planner.RaceGenerator.RaceTrack import RaceTrack
 from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 import subprocess
-import random
-from typing import Optional
 import matplotlib.pyplot as plt
+import numpy as np
+import yaml
 
 ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
 BASEPATH = os.path.dirname(os.path.abspath(__file__))
@@ -58,7 +55,7 @@ def main():
 
     run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path)
 
-    togt_plotter = RacePlotter(traj_path, track_path)
+    togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                     save_fig=True, 
                     fig_name="race_uzh_19wp_2d", 
@@ -75,7 +72,8 @@ def main():
                         margin=0.0,
                         gate_color='r',
                         draw_tube=True,
-                        tube_color='purple')
+                        tube_color='purple',
+                        sig_tube=True)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":

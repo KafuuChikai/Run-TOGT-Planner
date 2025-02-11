@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
-from mpl_toolkits.mplot3d.art3d import PathPatch3D
 from run_togt_planner.RaceVisualizer.track import plot_track, plot_track_3d
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
+import yaml
+from scipy.spatial.distance import cdist
 
 import os
 
@@ -20,9 +21,12 @@ matplotlib.rcParams['ps.fonttype'] = 42
 class RacePlotter:
     def __init__(self,
                  traj_file: Union[os.PathLike, str],
-                 track_file: Union[os.PathLike, str]):
+                 track_file: Union[os.PathLike, str],
+                 wpt_path: Optional[Union[os.PathLike, str]] = None):
         self.traj_file = os.fspath(traj_file)
         self.track_file = os.fspath(track_file)
+        if wpt_path is not None:
+            self.wpt_path = os.fspath(wpt_path)
 
         data_ocp = np.genfromtxt(traj_file, dtype=float, delimiter=',', names=True)
         self.t = data_ocp['t']
@@ -44,7 +48,8 @@ class RacePlotter:
         self.u_3 = data_ocp['u_3']
         self.u_4 = data_ocp['u_4']
 
-    def estimate_tangents(self, ps):
+    def estimate_tangents(self, 
+                          ps : np.ndarray) -> np.ndarray:
         # compute tangents
         dp_x = np.gradient(ps[:, 0])
         dp_y = np.gradient(ps[:, 1])
@@ -54,13 +59,18 @@ class RacePlotter:
         tangents /= np.linalg.norm(tangents, axis=1).reshape(-1, 1)
         return tangents
     
-    def sigmoid(self, x, bias, max_scale):
+    def sigmoid(self, 
+                x : np.ndarray, 
+                bias : float, 
+                max_scale : float) -> np.ndarray:
         return 1 + max_scale*(-1/(1 + np.exp(bias)) + 1/(1 + np.exp(-(x - bias))))/(1-1/(1 + np.exp(bias)))
     
     def plot_show(self):
         plt.show()
 
-    def get_line_tube(self, ps, tube_radius):
+    def get_line_tube(self, 
+                      ps : np.ndarray, 
+                      tube_radius : float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         # create tube parameters
         num_points = len(ps)
         theta = np.linspace(0, 2 * np.pi, 20)
@@ -95,21 +105,47 @@ class RacePlotter:
         
         return tube_x, tube_y, tube_z
     
-    def get_sig_tube(self, ps, tube_radius, tube_tore, bias, max_scale):
-        # create tube parameters
-        num_points = len(ps)
+    def get_sig_tube(self, 
+                     ts : np.ndarray,
+                     ps : np.ndarray, 
+                     tube_radius : float, 
+                     tube_tore : float, 
+                     bias : float, 
+                     max_scale : float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        if self.wpt_path is None:
+            raise ValueError("wpt_path is not provided.")
+        with open(self.wpt_path, 'r') as file:
+            wpt_data = yaml.safe_load(file)
+        with open(self.track_file, 'r') as file:
+            track_data = yaml.safe_load(file)
+        
+        start_point = np.array(track_data['initState']['pos']).reshape(-1, 3)
+        end_point = np.array(track_data['endState']['pos']).reshape(-1, 3)
+        mid_point = np.array([wpt_data['waypoints']]).reshape(-1, 3)
+        wps = np.concatenate((start_point, mid_point, end_point), axis=0).reshape(-1, 3)
+        wps_t = np.array([wpt_data['timestamps']]).flatten()
+
+        # search for the next waypoints
+        indices = np.searchsorted(wps_t, ts, side='right').astype(int)
+        dist1 = np.linalg.norm(ps - wps[indices - 1], axis=1)
+        dist2 = np.linalg.norm(ps - wps[indices], axis=1)
+        min_distances = np.minimum(dist1, dist2)
+
+        tube_size = tube_tore * tube_radius * self.sigmoid(min_distances, bias, max_scale)  # 根据距离计算 tube 半径
         theta = np.linspace(0, 2 * np.pi, 20)
-        circle_x = tube_radius * np.cos(theta)
-        circle_y = tube_radius * np.sin(theta)
         tangent = self.estimate_tangents(ps)
 
         # initialize tube coordinates array
+        num_points = len(ps)
         tube_x = np.zeros((num_points, len(theta)))
         tube_y = np.zeros((num_points, len(theta)))
         tube_z = np.zeros((num_points, len(theta)))
 
         # compute tangents and normals for building tube cross-section
         for i in range(num_points):
+            # compute circle points
+            circle_x = tube_size[i] * np.cos(theta)
+            circle_y = tube_size[i] * np.sin(theta)
             # choose an arbitrary vector not parallel to the tangent
             arbitrary_vector = np.array([1, 0, 0]) if not np.allclose(tangent[i], [1, 0, 0]) else np.array([0, 1, 0])
 
@@ -233,6 +269,8 @@ class RacePlotter:
                 tube_color = 'purple'
             if not sig_tube:
                 tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
+            else:
+                tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, tube_radius, tube_tore=0.5, bias=3, max_scale=4)
             ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=0.05, edgecolor=tube_color)
 
         # plot trajectory

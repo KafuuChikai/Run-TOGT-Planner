@@ -1,6 +1,5 @@
 import os
 from run_togt_planner.RaceGenerator.GenerationTools import create_state, create_gate
-from run_togt_planner.RaceGenerator.GateShape import SingleBall, TrianglePrisma, RectanglePrisma, PentagonPrisma, HexagonPrisma
 from run_togt_planner.RaceGenerator.RaceTrack import RaceTrack
 from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 import subprocess
