@@ -119,14 +119,11 @@ class RacePlotter:
         with open(self.track_file, 'r') as file:
             track_data = yaml.safe_load(file)
         
-        start_point = np.array(track_data['initState']['pos']).reshape(-1, 3)
-        end_point = np.array(track_data['endState']['pos']).reshape(-1, 3)
-        mid_point = np.array([wpt_data['waypoints']]).reshape(-1, 3)
-        wps = np.concatenate((start_point, mid_point, end_point), axis=0).reshape(-1, 3)
+        wps = np.array([wpt_data['waypoints']]).reshape(-1, 3)
         wps_t = np.array([wpt_data['timestamps']]).flatten()
 
         # search for the next waypoints
-        indices = np.searchsorted(wps_t, ts, side='right').astype(int)
+        indices = np.searchsorted(wps_t[:-1], ts, side='right').astype(int)
         dist1 = np.linalg.norm(ps - wps[indices - 1], axis=1)
         dist2 = np.linalg.norm(ps - wps[indices], axis=1)
         min_distances = np.minimum(dist1, dist2)
