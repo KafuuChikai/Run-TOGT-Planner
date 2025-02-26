@@ -67,8 +67,10 @@ def plot_track(ax, track_file, radius=None, margin=None):
             R = rpy_to_rotation_matrix(g['rpy'])
             # hw = 0.5*(g['width']-g['marginW'])
             # hh = 0.5*(g['height']-g['marginH'])
-            hw = 0.5*g['width']
-            hh = 0.5*g['height']
+            # hw = 0.5*g['width']
+            # hh = 0.5*g['height']
+            hw = 1.0
+            hh = 1.0
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
@@ -179,8 +181,10 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
             R = rpy_to_rotation_matrix(g['rpy'])
             # hw = 0.5*(g['width']-g['marginW'])
             # hh = 0.5*(g['height']-g['marginH'])
-            hw = 0.5*g['width']
-            hh = 0.5*g['height']
+            # hw = 0.5*g['width']
+            # hh = 0.5*g['height']
+            hw = 0.5
+            hh = 0.5
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
