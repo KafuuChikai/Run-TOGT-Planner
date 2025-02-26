@@ -62,8 +62,11 @@ class RacePlotter:
     def sigmoid(self, 
                 x : np.ndarray, 
                 bias : float, 
-                max_scale : float) -> np.ndarray:
-        return 1 + max_scale*(-1/(1 + np.exp(bias)) + 1/(1 + np.exp(-(x - bias))))/(1-1/(1 + np.exp(bias)))
+                inner_radius : float,
+                outer_radius : float,
+                rate : float) -> np.ndarray:
+        # return 1 + max_scale*(-1/(1 + np.exp(bias)) + 1/(1 + np.exp(-(x - bias))))/(1 - 1/(1 + np.exp(bias)))
+        return inner_radius + outer_radius * (1 / (1 + np.exp(- rate * (x - bias))))
     
     def plot_show(self):
         plt.show()
@@ -108,10 +111,11 @@ class RacePlotter:
     def get_sig_tube(self, 
                      ts : np.ndarray,
                      ps : np.ndarray, 
-                     tube_radius : float, 
-                     tube_tore : float, 
-                     bias : float, 
-                     max_scale : float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+                     bias : float,
+                     inner_radius : float,
+                     outer_radius : float,
+                     rate : float,
+                     scale: float = 1.0) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         if self.wpt_path is None:
             raise ValueError("wpt_path is not provided.")
         with open(self.wpt_path, 'r') as file:
@@ -128,7 +132,9 @@ class RacePlotter:
         dist2 = np.linalg.norm(ps - wps[indices], axis=1)
         min_distances = np.minimum(dist1, dist2)
 
-        tube_size = tube_tore * tube_radius * self.sigmoid(min_distances, bias, max_scale)  # 根据距离计算 tube 半径
+        tube_size = self.sigmoid(min_distances, bias, inner_radius, outer_radius, rate)  # 根据距离计算 tube 半径
+        tube_size = tube_size * scale  # 缩放 tube 半径
+        
         theta = np.linspace(0, 2 * np.pi, 20)
         tangent = self.estimate_tangents(ps)
 
@@ -241,7 +247,7 @@ class RacePlotter:
                sig_tube: bool = False,
                gate_color: Optional[str] = None,
                tube_color: Optional[str] = None):
-        fig = plt.figure(figsize=(13, 7))
+        fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 
         ts = np.linspace(self.t[0], self.t[-1], 5000)
@@ -264,11 +270,16 @@ class RacePlotter:
             tube_radius = 1.0
             if tube_color is None:
                 tube_color = 'purple'
+                # tube_color_ = 'green'
             if not sig_tube:
                 tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
             else:
-                tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, tube_radius, tube_tore=0.5, bias=3, max_scale=4)
+                # tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=1.0, inner_radius=0.5, outer_radius=2.0, rate=3)
+                # race_mini_uzh_19g
+                tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6)
+                tube_x_, tube_y_, tube_z_ = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6, scale=0.5)
             ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=0.05, edgecolor=tube_color)
+            ax.plot_surface(tube_x_, tube_y_, tube_z_, color='green', alpha=0.05, edgecolor='green')
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
@@ -278,11 +289,34 @@ class RacePlotter:
 
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')
-        plt.axis('equal')
+        # plt.axis('equal')
+        self.set_axes_equal(ax)
         plt.grid()
+        ax.view_init(elev=90, azim=-90)
 
         if save_fig:
             save_path = os.fspath(save_path) if save_path is not None else (BASEPATH + "resources/figure/")
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+
+    
+    def set_axes_equal(self, ax):
+        """Set 3D plot axes to equal scale."""
+        x_limits = ax.get_xlim3d()
+        y_limits = ax.get_ylim3d()
+        z_limits = ax.get_zlim3d()
+
+        x_range = abs(x_limits[1] - x_limits[0])
+        y_range = abs(y_limits[1] - y_limits[0])
+        z_range = abs(z_limits[1] - z_limits[0])
+
+        max_range = max(x_range, y_range, z_range)
+
+        mid_x = np.mean(x_limits)
+        mid_y = np.mean(y_limits)
+        mid_z = np.mean(z_limits)
+
+        ax.set_xlim3d([mid_x - max_range / 2, mid_x + max_range / 2])
+        ax.set_ylim3d([mid_y - max_range / 2, mid_y + max_range / 2])
+        ax.set_zlim3d([mid_z - max_range / 2, mid_z + max_range / 2])
