@@ -11,7 +11,7 @@ from scipy.spatial.distance import cdist
 
 import os
 
-BASEPATH = os.path.abspath(__file__).split("utils/", 1)[0]
+ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
 
 # plot settings
 matplotlib.rc('font', **{'size': 26})
@@ -65,7 +65,6 @@ class RacePlotter:
                 inner_radius : float,
                 outer_radius : float,
                 rate : float) -> np.ndarray:
-        # return 1 + max_scale*(-1/(1 + np.exp(bias)) + 1/(1 + np.exp(-(x - bias))))/(1 - 1/(1 + np.exp(bias)))
         return inner_radius + outer_radius * (1 / (1 + np.exp(- rate * (x - bias))))
     
     def plot_show(self):
@@ -231,7 +230,7 @@ class RacePlotter:
         plt.grid()
 
         if save_fig:
-            save_path = os.fspath(save_path) if save_path is not None else (BASEPATH + "resources/figure/")
+            save_path = os.fspath(save_path) if save_path is not None else os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/")
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
@@ -279,7 +278,7 @@ class RacePlotter:
                 tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6)
                 tube_x_, tube_y_, tube_z_ = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6, scale=0.5)
             ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=0.05, edgecolor=tube_color)
-            ax.plot_surface(tube_x_, tube_y_, tube_z_, color='green', alpha=0.05, edgecolor='green')
+            # ax.plot_surface(tube_x_, tube_y_, tube_z_, color='green', alpha=0.05, edgecolor='green')
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
@@ -295,11 +294,10 @@ class RacePlotter:
         ax.view_init(elev=90, azim=-90)
 
         if save_fig:
-            save_path = os.fspath(save_path) if save_path is not None else (BASEPATH + "resources/figure/")
+            save_path = os.fspath(save_path) if save_path is not None else os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/")
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
-
     
     def set_axes_equal(self, ax):
         """Set 3D plot axes to equal scale."""
