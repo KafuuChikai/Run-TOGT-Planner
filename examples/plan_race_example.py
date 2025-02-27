@@ -6,7 +6,6 @@ from run_togt_planner.RaceVisualizer.RacePlotter import RacePlotter
 import subprocess
 
 ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
-BASEPATH = os.path.dirname(os.path.abspath(__file__))
 
 def create_racetrack():
     # Define gate parameters
@@ -72,7 +71,7 @@ def create_racetrack():
     test_race.add_gate(pen_gate)
     test_race.add_gate(hex_gate)
 
-    test_race.save_to_yaml(save_dir=os.path.join(BASEPATH, "../resources/racetrack"),
+    test_race.save_to_yaml(save_dir=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/racetrack"),
                         overwrite=True, 
                         standard=True, 
                         save_output=True)
@@ -88,7 +87,7 @@ def read_racetrack():
     read_race = RaceTrack(init_state=init_state,
                         end_state=end_state,
                         race_name='example')
-    read_race.load_from_yaml(load_dir=os.path.join(BASEPATH, "../resources/racetrack/example.yaml"))
+    read_race.load_from_yaml(load_dir=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/racetrack/example.yaml"))
     return read_race
 
 def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
@@ -121,27 +120,27 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 
 def plot_traj(traj_path, track_path):
     togt_plotter = RacePlotter(traj_path, track_path)
-    togt_plotter.plot(save_fig=True, fig_name="example_2d", save_path=os.path.join(BASEPATH, "../resources/figure/"), 
+    togt_plotter.plot(save_fig=True, fig_name="example_2d", save_path=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/"), 
                       draw_tube=True, tube_color='green')
-    togt_plotter.plot3d(save_fig=True, fig_name="example_3d", save_path=os.path.join(BASEPATH, "../resources/figure/"),
+    togt_plotter.plot3d(save_fig=True, fig_name="example_3d", save_path=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/"),
                         radius=0.5, margin=0.0, gate_color='blue', draw_tube=True, tube_color='green')
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
     # input parameters
-    config_path = os.path.join(ROOTPATH, "parameters/cpc")
+    config_path = os.fspath("parameters/cpc")
     quad_name = "cpc"
-    track_path = os.fspath("../resources/racetrack")
-    traj_path = os.fspath("../resources/trajectory")
-    wpt_path = os.fspath("../resources/trajectory")
+    track_path = os.fspath("Run-TOGT-Planner/resources/racetrack")
+    traj_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
+    wpt_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
 
-    os.makedirs(os.path.join(BASEPATH, traj_path), exist_ok=True)
-    os.makedirs(os.path.join(BASEPATH, wpt_path), exist_ok=True)
+    os.makedirs(os.path.join(ROOTPATH, traj_path), exist_ok=True)
+    os.makedirs(os.path.join(ROOTPATH, wpt_path), exist_ok=True)
 
-    config_path = os.path.join(BASEPATH, config_path)
-    track_path = os.path.join(BASEPATH, track_path, 'example.yaml')
-    traj_path = os.path.join(BASEPATH, traj_path, 'example.csv')
-    wpt_path = os.path.join(BASEPATH, wpt_path, 'example.yaml')
+    config_path = os.path.join(ROOTPATH, config_path)
+    track_path = os.path.join(ROOTPATH, track_path, 'example.yaml')
+    traj_path = os.path.join(ROOTPATH, traj_path, 'example.csv')
+    wpt_path = os.path.join(ROOTPATH, wpt_path, 'example.yaml')
 
     # Step 1: Create a racetrack
     create_racetrack()
