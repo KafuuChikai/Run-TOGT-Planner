@@ -1,0 +1,75 @@
+initState:
+  pos: [0.0, 0.0, 0.0]
+  vel: [0.0, 0.0, 0.0]
+  acc: [0.0, 0.0, 0.0]
+  jer: [0.0, 0.0, 0.0]
+  rot: [0.0, 0.0, 0.0, 0.0]
+  cthrustmass: 9.8066
+  euler: [0.0, 0.0, 0.0]
+
+endState:
+  pos: [0.0, 0.0, 0.0]
+  vel: [0.0, 0.0, 0.0]
+  acc: [0.0, 0.0, 0.0]
+  jer: [0.0, 0.0, 0.0]
+  rot: [0.0, 0.0, 0.0, 0.0]
+  cthrustmass: 9.8066
+  euler: [0.0, 0.0, 0.0]
+
+orders: ['Gate1', 'Gate2', 'Gate3', 'Gate4', 'Gate5']
+
+Gate1:
+  type: 'SingleBall'
+  name: 'ball_gate'
+  position: [3.0, 0.0, 0.0]
+  radius: 0.5
+  margin: 0.5
+  stationary: true
+
+Gate2:
+  type: 'TrianglePrisma'
+  name: 'tri_gate'
+  position: [0.0, 5.0, 0.0]
+  rpy: [0.0, -90, 0.0]
+  width: 2.4
+  height: 2.4
+  margin: 2.4
+  length: 0.0
+  midpoints: 0
+  stationary: true
+
+Gate3:
+  type: 'RectanglePrisma'
+  name: 'rec_gate'
+  position: [0.0, 8.0, 0.0]
+  rpy: [0.0, -90, 0.0]
+  width: 2.4
+  height: 2.4
+  marginW: 2.4
+  marginH: 2.4
+  length: 0.0
+  midpoints: 0
+  stationary: true
+
+Gate4:
+  type: 'PentagonPrisma'
+  name: 'pen_gate'
+  position: [0.0, 9.0, 0.0]
+  rpy: [0.0, -90, 0.0]
+  radius: 2.4
+  margin: 2.4
+  length: 16.0
+  midpoints: 0
+  stationary: true
+
+Gate5:
+  type: 'HexagonPrisma'
+  name: 'hex_gate'
+  position: [0.0, 18.0, 0.0]
+  rpy: [0.0, -90, 0.0]
+  side: 1.5
+  margin: 1.5
+  length: 0.0
+  midpoints: 0
+  stationary: true
+

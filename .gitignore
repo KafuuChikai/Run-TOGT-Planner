@@ -4,7 +4,9 @@
 
 # Build directory
 build/*
-resources/*
+resources/figure/*
+resources/trajectory/*
+resources/racetrack/random_example.yaml
 
 # LLVM and Clang
 **/.cache
