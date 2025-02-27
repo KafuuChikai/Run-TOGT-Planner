@@ -8,7 +8,6 @@ from typing import Optional
 import matplotlib.pyplot as plt
 
 ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
-BASEPATH = os.path.dirname(os.path.abspath(__file__))
 
 def create_random_racetrack_wp(gate_num: int,
                                shape_kwargs: dict,
@@ -111,22 +110,22 @@ def plot_traj(traj_path, track_path, fig_path):
 
 if __name__ == "__main__":
     # input parameters
-    config_path = os.path.join(ROOTPATH, "parameters/cpc")
+    config_path = os.path.join("parameters/cpc")
     quad_name = "cpc"
-    track_path = os.fspath("../resources/racetrack")
-    traj_path = os.fspath("../resources/trajectory")
-    wpt_path = os.fspath("../resources/trajectory")
-    fig_path = os.fspath("../resources/figure")
+    track_path = os.fspath("Run-TOGT-Planner/resources/racetrack")
+    traj_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
+    wpt_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
+    fig_path = os.fspath("Run-TOGT-Planner/resources/figure")
 
-    os.makedirs(os.path.join(BASEPATH, traj_path), exist_ok=True)
-    os.makedirs(os.path.join(BASEPATH, wpt_path), exist_ok=True)
+    os.makedirs(os.path.join(ROOTPATH, traj_path), exist_ok=True)
+    os.makedirs(os.path.join(ROOTPATH, wpt_path), exist_ok=True)
 
-    config_path = os.path.join(BASEPATH, config_path)
-    track_path = os.path.join(BASEPATH, track_path)
+    config_path = os.path.join(ROOTPATH, config_path)
+    track_path = os.path.join(ROOTPATH, track_path)
     track_file_name = os.path.join(track_path, 'random_example.yaml')
-    traj_path = os.path.join(BASEPATH, traj_path, 'random_example.csv')
-    wpt_path = os.path.join(BASEPATH, wpt_path, 'random_example.yaml')
-    fig_path = os.path.join(BASEPATH, fig_path)
+    traj_path = os.path.join(ROOTPATH, traj_path, 'random_example.csv')
+    wpt_path = os.path.join(ROOTPATH, wpt_path, 'random_example.yaml')
+    fig_path = os.path.join(ROOTPATH, fig_path)
 
     ball_shape_kwargs = {
         'radius': 0.3,
