@@ -288,8 +288,7 @@ class RacePlotter:
 
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')
-        # plt.axis('equal')
-        self.set_axes_equal(ax)
+        plt.axis('equal')
         plt.grid()
         ax.view_init(elev=90, azim=-90)
 
@@ -298,23 +297,3 @@ class RacePlotter:
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
-    
-    def set_axes_equal(self, ax):
-        """Set 3D plot axes to equal scale."""
-        x_limits = ax.get_xlim3d()
-        y_limits = ax.get_ylim3d()
-        z_limits = ax.get_zlim3d()
-
-        x_range = abs(x_limits[1] - x_limits[0])
-        y_range = abs(y_limits[1] - y_limits[0])
-        z_range = abs(z_limits[1] - z_limits[0])
-
-        max_range = max(x_range, y_range, z_range)
-
-        mid_x = np.mean(x_limits)
-        mid_y = np.mean(y_limits)
-        mid_z = np.mean(z_limits)
-
-        ax.set_xlim3d([mid_x - max_range / 2, mid_x + max_range / 2])
-        ax.set_ylim3d([mid_y - max_range / 2, mid_y + max_range / 2])
-        ax.set_zlim3d([mid_z - max_range / 2, mid_z + max_range / 2])
