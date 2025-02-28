@@ -261,24 +261,20 @@ class RacePlotter:
             np.interp(ts, self.t, self.v_z)
         ]).T
         vs = np.linalg.norm(vs, axis=1)
-        v0, v1 = 6.0, np.amax(vs)
+        v0, v1 = (np.amin(vs) + 2 * np.amax(vs)) / 3, np.amax(vs)
         vt = np.minimum(np.maximum(vs, v0), v1)
+
+        # save self variables
+        self.ax = ax
+        self.ts = ts
+        self.ps = ps
         
         # draw tube
         if draw_tube:
-            tube_radius = 1.0
-            if tube_color is None:
-                tube_color = 'purple'
-                # tube_color_ = 'green'
             if not sig_tube:
-                tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, tube_radius=radius)
             else:
-                # tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=1.0, inner_radius=0.5, outer_radius=2.0, rate=3)
-                # race_mini_uzh_19g
-                tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6)
-                tube_x_, tube_y_, tube_z_ = self.get_sig_tube(ts, ps, bias=0.5, inner_radius=0.125, outer_radius=0.5, rate=6, scale=0.5)
-            ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=0.05, edgecolor=tube_color)
-            # ax.plot_surface(tube_x_, tube_y_, tube_z_, color='green', alpha=0.05, edgecolor='green')
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, bias=2*radius, inner_radius=radius/2, outer_radius=2*radius, rate=6)
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
@@ -297,3 +293,34 @@ class RacePlotter:
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+
+    def plot3d_tube(self,
+                    scale: float = 1.0,
+                    sig_tube: bool = False,
+                    tube_color: Optional[str] = None,
+                    alpha: float = 0.01,
+                    tube_edge_color: Optional[str] = None,
+                    tube_radius: float = 1.0,
+                    bias: float = 1.0,
+                    inner_radius: float = 0.5,
+                    outer_radius: float = 2.0,
+                    rate: float = 6):
+
+        ax = self.ax
+        ts = self.ts
+        ps = self.ps
+
+        # set tube color
+        if tube_color is None:
+            tube_color = 'purple'
+        if tube_edge_color is None:
+            tube_edge_color = tube_color
+
+        # compute tube coordinates
+        if not sig_tube:
+            tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
+        else:
+            tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
+
+        # plot tube
+        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color)
