@@ -48,6 +48,26 @@ class RacePlotter:
         self.u_3 = data_ocp['u_3']
         self.u_4 = data_ocp['u_4']
 
+        ts = np.linspace(self.t[0], self.t[-1], 5000)
+        ps = np.array([
+            np.interp(ts, self.t, self.p_x),
+            np.interp(ts, self.t, self.p_y),
+            np.interp(ts, self.t, self.p_z)
+        ]).T
+        vs = np.array([
+            np.interp(ts, self.t, self.v_x),
+            np.interp(ts, self.t, self.v_y),
+            np.interp(ts, self.t, self.v_z)
+        ]).T
+        vs = np.linalg.norm(vs, axis=1)
+        v0, v1 = (np.amin(vs) + 2 * np.amax(vs)) / 3, np.amax(vs)
+        vt = np.minimum(np.maximum(vs, v0), v1)
+
+        self.ts = ts
+        self.ps = ps
+        self.vs = vs
+        self.vt = vt
+
     def estimate_tangents(self, 
                           ps : np.ndarray) -> np.ndarray:
         # compute tangents
@@ -180,25 +200,8 @@ class RacePlotter:
              tube_color: Optional[str] = None):
         fig = plt.figure(figsize=(13, 7))
 
-        ts = np.linspace(self.t[0], self.t[-1], 5000)
-        ps = np.array([
-            np.interp(ts, self.t, self.p_x),
-            np.interp(ts, self.t, self.p_y),
-            np.interp(ts, self.t, self.p_z)
-        ]).T
-        vs = np.array([
-            np.interp(ts, self.t, self.v_x),
-            np.interp(ts, self.t, self.v_y),
-            np.interp(ts, self.t, self.v_z)
-        ]).T
-        vs = np.linalg.norm(vs, axis=1)
-        v0, v1 = 6.0, np.amax(vs)
-        vt = np.minimum(np.maximum(vs, v0), v1)
-        #vt = (vt-v0) / (v1-v0)
-        r = 1.0 * (1-vt) + 1.0 * vt
-        g = 1.0 * (1-vt) + 0.0 * vt
-        b = 0.0 * (1-vt) + 0.0 * vt
-        rgb = np.array([r, g, b]).T
+        ps = self.ps
+        vt = self.vt
 
         if draw_tube:
             path_data = []
@@ -248,27 +251,11 @@ class RacePlotter:
                tube_color: Optional[str] = None):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
+        self.ax_3d = ax
 
-        ts = np.linspace(self.t[0], self.t[-1], 5000)
-        ps = np.array([
-            np.interp(ts, self.t, self.p_x),
-            np.interp(ts, self.t, self.p_y),
-            np.interp(ts, self.t, self.p_z)
-        ]).T
-        vs = np.array([
-            np.interp(ts, self.t, self.v_x),
-            np.interp(ts, self.t, self.v_y),
-            np.interp(ts, self.t, self.v_z)
-        ]).T
-        vs = np.linalg.norm(vs, axis=1)
-        v0, v1 = (np.amin(vs) + 2 * np.amax(vs)) / 3, np.amax(vs)
-        vt = np.minimum(np.maximum(vs, v0), v1)
+        ps = self.ps
+        vt = self.vt
 
-        # save self variables
-        self.ax = ax
-        self.ts = ts
-        self.ps = ps
-        
         # draw tube
         if draw_tube:
             if not sig_tube:
@@ -306,7 +293,7 @@ class RacePlotter:
                     outer_radius: float = 2.0,
                     rate: float = 6):
 
-        ax = self.ax
+        ax = self.ax_3d
         ts = self.ts
         ps = self.ps
 
