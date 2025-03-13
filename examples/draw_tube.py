@@ -47,6 +47,7 @@ def main():
 
     config_path = os.path.join(ROOTPATH, "parameters/cpc")
     quad_name = "cpc"
+
     track_path = os.path.join(ROOTPATH, track_path, 'figure8.yaml')
     traj_path = os.path.join(ROOTPATH, traj_path, 'figure8.csv')
     wpt_path = os.path.join(ROOTPATH, wpt_path, 'figure8.yaml')
@@ -67,7 +68,7 @@ def main():
                       width=2*radius,
                       height=2*radius,
                       margin=0.0,
-                      draw_tube=True,
+                      draw_tube=False,
                       tube_color='purple', 
                       sig_tube=True,
                       alpha=alpha,
@@ -81,26 +82,96 @@ def main():
                         height=2*radius,
                         margin=0.0,
                         gate_color='r',
-                        draw_tube=True,
+                        draw_tube=False,
                         tube_color='purple',
                         sig_tube=True,
                         alpha=alpha,
                         tube_rate=tube_rate)
-    togt_plotter.plot_tube(scale=0.5,
+    togt_plotter.plot_tube(scale=0.7,
                            sig_tube=True,
-                           tube_color='blue', 
+                           tube_color=[1.0, 0, 0], 
                            bias=2*radius, 
                            inner_radius=radius/2, 
                            outer_radius=radius*2,
-                           alpha=alpha,
+                           alpha=0.008,
                            rate=tube_rate)
-    togt_plotter.plot3d_tube(scale=0.5, 
+    togt_plotter.plot3d_tube(scale=0.7, 
                              sig_tube=True,
-                             tube_color='blue', 
+                             tube_color=[1.0, 0, 0], 
                              bias=2*radius, 
                              inner_radius=radius/2, 
                              outer_radius=radius*2,
-                             alpha=alpha,
+                             alpha=0.008,
+                             rate=tube_rate)
+
+    ###### Next track ######
+
+    # input parameters
+    track_path = os.fspath("Run-TOGT-Planner/resources/racetrack")
+    traj_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
+    wpt_path = os.fspath("Run-TOGT-Planner/resources/trajectory")
+    fig_path = os.fspath("Run-TOGT-Planner/resources/figure")
+
+    os.makedirs(os.path.join(ROOTPATH, traj_path), exist_ok=True)
+    os.makedirs(os.path.join(ROOTPATH, wpt_path), exist_ok=True)
+
+    config_path = os.path.join(ROOTPATH, "parameters/cpc")
+    quad_name = "cpc"
+
+    track_path = os.path.join(ROOTPATH, track_path, 'race_uzh_19g.yaml')
+    traj_path = os.path.join(ROOTPATH, traj_path, 'race_uzh_19g.csv')
+    wpt_path = os.path.join(ROOTPATH, wpt_path, 'race_uzh_19g.yaml')
+    fig_path = os.path.join(ROOTPATH, fig_path)
+
+    run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path)
+
+    radius = 1.0
+    alpha = 0.04
+    tube_rate = 4
+
+    togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
+    togt_plotter.plot(cmap=plt.cm.cool_r,
+                      save_fig=True, 
+                      fig_name="race_uzh_19g_2d", 
+                      save_path=fig_path,
+                      radius=radius,
+                      width=2*radius,
+                      height=2*radius,
+                      margin=0.0,
+                      draw_tube=False,
+                      tube_color='purple', 
+                      sig_tube=True,
+                      alpha=alpha,
+                      tube_rate=tube_rate)
+    togt_plotter.plot3d(cmap=plt.cm.cool_r,
+                        save_fig=True, 
+                        fig_name="race_uzh_19g_3d", 
+                        save_path=fig_path,
+                        radius=radius,
+                        width=2*radius,
+                        height=2*radius,
+                        margin=0.0,
+                        gate_color='r',
+                        draw_tube=False,
+                        tube_color='purple',
+                        sig_tube=True,
+                        alpha=alpha,
+                        tube_rate=tube_rate)
+    togt_plotter.plot_tube(scale=0.7,
+                           sig_tube=True,
+                           tube_color=[0, 0, 0.6], 
+                           bias=2*radius, 
+                           inner_radius=radius/2, 
+                           outer_radius=radius*2,
+                           alpha=0.03,
+                           rate=tube_rate)
+    togt_plotter.plot3d_tube(scale=0.7, 
+                             sig_tube=True,
+                             tube_color=[0, 0, 0.6], 
+                             bias=2*radius, 
+                             inner_radius=radius/2, 
+                             outer_radius=radius*2,
+                             alpha=0.03,
                              rate=tube_rate)
     togt_plotter.plot_show()
 

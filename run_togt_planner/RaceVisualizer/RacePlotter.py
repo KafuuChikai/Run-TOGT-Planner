@@ -279,7 +279,8 @@ class RacePlotter:
                gate_color: Optional[str] = None,
                tube_color: Optional[str] = None,
                alpha: float = 0.01,
-               tube_rate: float = 6):
+               tube_rate: float = 6,
+               shade: bool = True):
         fig = plt.figure(figsize=(12, 8))
         ax = fig.add_axes([0, 0, 1, 1], projection='3d')
 
@@ -312,9 +313,9 @@ class RacePlotter:
         # draw tube
         if draw_tube:
             if not sig_tube:
-                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, tube_radius=radius)
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, tube_radius=radius, shade=shade)
             else:
-                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, bias=1.5*radius, inner_radius=radius/2, outer_radius=1.5*radius, rate=tube_rate)
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, bias=1.5*radius, inner_radius=radius/2, outer_radius=1.5*radius, rate=tube_rate, shade=shade)
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
@@ -347,7 +348,8 @@ class RacePlotter:
                     bias: float = 1.0,
                     inner_radius: float = 0.5,
                     outer_radius: float = 2.0,
-                    rate: float = 6):
+                    rate: float = 6,
+                    shade: bool = True):
 
         ax = self.ax_3d
         ts = self.ts
@@ -366,7 +368,7 @@ class RacePlotter:
             tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
 
         # plot tube
-        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color, shade=False, antialiased=True)
+        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color, shade=shade, antialiased=True)
 
     def set_nice_ticks(self, ax, range_val, ticks_count, axis='x'):
         ticks_interval = range_val / (ticks_count - 1)
