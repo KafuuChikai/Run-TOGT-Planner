@@ -192,10 +192,14 @@ class RacePlotter:
              save_path: Union[os.PathLike, str] = None,
              fig_name: Optional[str] = None,
              radius: Optional[float] = None,
+             width: Optional[float] = None,
+             height: Optional[float] = None,
              margin: Optional[float] = None,
              draw_tube: bool = False,
              sig_tube: bool = False,
-             tube_color: Optional[str] = None):
+             tube_color: Optional[str] = None,
+             alpha: float = 0.01,
+             tube_rate: float = 6):
         fig = plt.figure(figsize=(8, 6))
         ax = plt.gca()
         self.ax_2d = ax
@@ -205,15 +209,15 @@ class RacePlotter:
 
         if draw_tube:
             if not sig_tube:
-                self.plot_tube(tube_color=tube_color, tube_radius=radius)
+                self.plot_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, tube_radius=radius)
             else:
-                self.plot_tube(sig_tube=sig_tube, tube_color=tube_color, bias=2*radius, inner_radius=radius/2, outer_radius=2*radius, rate=6)
+                self.plot_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, bias=1.5*radius, inner_radius=radius/2, outer_radius=1.5*radius, rate=tube_rate)
 
         plt.scatter(ps[:, 0], ps[:, 1], s=5,
                     c=vt, cmap=cmap)
         plt.colorbar(pad=0.01).ax.set_ylabel('Speed [m/s]')
 
-        plot_track(plt.gca(), self.track_file, radius=radius, margin=margin)
+        plot_track(plt.gca(), self.track_file, set_radius=radius, set_width=width, set_height=height, set_margin=margin)
 
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')
@@ -263,11 +267,15 @@ class RacePlotter:
                save_path: Union[os.PathLike, str] = None,
                fig_name: Optional[str] = None,
                radius: Optional[float] = None,
+               width: Optional[float] = None,
+               height: Optional[float] = None,
                margin: Optional[float] = None,
                draw_tube: bool = False,
                sig_tube: bool = False,
                gate_color: Optional[str] = None,
-               tube_color: Optional[str] = None):
+               tube_color: Optional[str] = None,
+               alpha: float = 0.01,
+               tube_rate: float = 6):
         fig = plt.figure(figsize=(12, 8))
         ax = fig.add_axes([0, 0, 1, 1], projection='3d')
 
@@ -300,9 +308,9 @@ class RacePlotter:
         # draw tube
         if draw_tube:
             if not sig_tube:
-                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, tube_radius=radius)
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, tube_radius=radius)
             else:
-                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, bias=2*radius, inner_radius=radius/2, outer_radius=2*radius, rate=6)
+                self.plot3d_tube(sig_tube=sig_tube, tube_color=tube_color, alpha=alpha, bias=1.5*radius, inner_radius=radius/2, outer_radius=1.5*radius, rate=tube_rate)
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
@@ -311,7 +319,7 @@ class RacePlotter:
         cbar = plt.colorbar(sc, shrink=shrink_factor, aspect=colorbar_aspect, pad=0.1)
         cbar.ax.set_ylabel('Speed [m/s]')
 
-        plot_track_3d(plt.gca(), self.track_file, radius=radius, margin=margin, color=gate_color)
+        plot_track_3d(plt.gca(), self.track_file, set_radius=radius, set_width=width, set_height=height, set_margin=margin, color=gate_color)
 
         ax.set_xlabel('x [m]', labelpad=30*(x_range/max_range))
         ax.set_ylabel('y [m]', labelpad=30*(y_range/max_range))

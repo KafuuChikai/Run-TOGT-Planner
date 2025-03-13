@@ -17,8 +17,7 @@ def rpy_to_rotation_matrix(rpy):
     R[2, 2] = cos(p) * cos(r)
     return R
 
-
-def plot_track(ax, track_file, radius=None, margin=None):
+def plot_track(ax, track_file, set_radius=None, set_width=None, set_height=None, set_margin=0):
     with open(track_file) as fp:
         track = yaml.safe_load(fp)
 
@@ -36,10 +35,9 @@ def plot_track(ax, track_file, radius=None, margin=None):
 
         if g['type'] == 'SingleBall':
             position = g['position']
-            # r = g['radius'] - g['margin']
-            r = g['radius']
-            if radius is not None and margin is not None:
-                r = np.clip(radius - margin, 0, None)
+            r = g['radius'] - g['margin']
+            if set_radius is not None:
+                r = set_radius - set_margin
             a = np.linspace(0, 2*np.pi)
             ax.plot(position[0]+r*np.cos(a),
                     position[1]+r*np.sin(a), '-', **args)
@@ -49,10 +47,12 @@ def plot_track(ax, track_file, radius=None, margin=None):
         elif g['type'] == 'TrianglePrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # hw = 0.5*(g['width']-g['margin'])
-            # hh = 0.5*(g['height']-g['margin'])
-            hw = 0.5*g['width']
-            hh = 0.5*g['height']
+            hw = 0.5*(g['width']-g['margin'])
+            hh = 0.5*(g['height']-g['margin'])
+            if set_width is not None:
+                hw = 0.5*(set_width - set_margin)
+            if set_height is not None:
+                hh = 0.5*(set_height - set_margin)
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
@@ -65,12 +65,12 @@ def plot_track(ax, track_file, radius=None, margin=None):
         elif g['type'] == 'RectanglePrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # hw = 0.5*(g['width']-g['marginW'])
-            # hh = 0.5*(g['height']-g['marginH'])
-            # hw = 0.5*g['width']
-            # hh = 0.5*g['height']
-            hw = 1.0
-            hh = 1.0
+            hw = 0.5*(g['width']-g['marginW'])
+            hh = 0.5*(g['height']-g['marginH'])
+            if set_width is not None:
+                hw = 0.5*(set_width - set_margin)
+            if set_height is not None:
+                hh = 0.5*(set_height - set_margin)
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
@@ -84,8 +84,9 @@ def plot_track(ax, track_file, radius=None, margin=None):
         elif g['type'] == 'PentagonPrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # ar = g['radius'] - g['margin']
-            ar = g['radius']
+            ar = g['radius'] - g['margin']
+            if set_radius is not None:
+                ar = set_radius - set_margin
             cos54 = np.cos(0.3*np.pi)
             sin54 = np.sin(0.3*np.pi)
             nd, on = ar * cos54, ar * sin54
@@ -106,8 +107,9 @@ def plot_track(ax, track_file, radius=None, margin=None):
         elif g['type'] == 'HexagonPrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # aside = g['side'] - g['margin']
-            aside = g['side']
+            aside = g['side'] - g['margin']
+            if set_radius is not None:
+                aside = set_radius - set_margin
             hside = 0.5 * aside
             height = hside * np.tan(np.pi/3.0)
             drift = 0.0
@@ -125,7 +127,7 @@ def plot_track(ax, track_file, radius=None, margin=None):
         else:
             raise ValueError('Unrecognized gate: ' + g['type'])
         
-def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
+def plot_track_3d(ax, track_file, set_radius=None, set_width=None, set_height=None, set_margin=0, color=None):
     if color is None:
         color = 'r'
 
@@ -147,8 +149,8 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
         if g['type'] == 'SingleBall':
             position = g['position']
             r = g['radius'] - g['margin']
-            if radius is not None and margin is not None:
-                r = np.clip(radius - margin, 0, None)
+            if set_radius is not None:
+                r = set_radius - set_margin
 
             # create sphere
             u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
@@ -163,10 +165,12 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
         elif g['type'] == 'TrianglePrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # hw = 0.5*(g['width']-g['margin'])
-            # hh = 0.5*(g['height']-g['margin'])
-            hw = 0.5*g['width']
-            hh = 0.5*g['height']
+            hw = 0.5*(g['width']-g['margin'])
+            hh = 0.5*(g['height']-g['margin'])
+            if set_width is not None:
+                hw = 0.5*(set_width - set_margin)
+            if set_height is not None:
+                hh = 0.5*(set_height - set_margin)
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
@@ -179,12 +183,12 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
         elif g['type'] == 'RectanglePrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # hw = 0.5*(g['width']-g['marginW'])
-            # hh = 0.5*(g['height']-g['marginH'])
-            # hw = 0.5*g['width']
-            # hh = 0.5*g['height']
-            hw = 0.5
-            hh = 0.5
+            hw = 0.5*(g['width']-g['marginW'])
+            hh = 0.5*(g['height']-g['marginH'])
+            if set_width is not None:
+                hw = 0.5*(set_width - set_margin)
+            if set_height is not None:
+                hh = 0.5*(set_height - set_margin)
             drift = 0.0
             verts = [
                 [-hh, hw, drift],
@@ -198,8 +202,9 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
         elif g['type'] == 'PentagonPrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # ar = g['radius'] - g['margin']
-            ar = g['radius']
+            ar = g['radius'] - g['margin']
+            if set_radius is not None:
+                ar = set_radius - set_margin
             cos54 = np.cos(0.3*np.pi)
             sin54 = np.sin(0.3*np.pi)
             nd, on = ar * cos54, ar * sin54
@@ -220,8 +225,9 @@ def plot_track_3d(ax, track_file, radius=None, margin=None, color=None):
         elif g['type'] == 'HexagonPrisma':
             position = g['position']
             R = rpy_to_rotation_matrix(g['rpy'])
-            # aside = g['side'] - g['margin']
-            aside = g['side']
+            aside = g['side'] - g['margin']
+            if set_radius is not None:
+                aside = set_radius - set_margin
             hside = 0.5 * aside
             height = hside * np.tan(np.pi/3.0)
             drift = 0.0
