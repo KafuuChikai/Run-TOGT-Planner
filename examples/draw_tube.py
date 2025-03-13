@@ -54,12 +54,14 @@ def main():
 
     run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path)
 
+    radius = 0.25
+
     togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                     save_fig=True, 
                     fig_name="figure8_2d", 
                     save_path=fig_path,
-                    radius=0.25,
+                    radius=radius,
                     margin=0.0,
                     draw_tube=True,
                     tube_color='purple', 
@@ -68,24 +70,24 @@ def main():
                         save_fig=True, 
                         fig_name="figure8_3d", 
                         save_path=fig_path,
-                        radius=0.25,
+                        radius=radius,
                         margin=0.0,
                         gate_color='r',
                         draw_tube=True,
                         tube_color='purple',
                         sig_tube=True)
-    togt_plotter.plot3d_tube(scale=0.5, 
-                             sig_tube=True,
-                             tube_color='blue', 
-                             bias=0.5, 
-                             inner_radius=0.125, 
-                             outer_radius=0.5)
     togt_plotter.plot_tube(scale=0.5,
                            sig_tube=True,
                            tube_color='blue', 
-                           bias=0.5, 
-                           inner_radius=0.125, 
-                           outer_radius=0.5)
+                           bias=2*radius, 
+                           inner_radius=radius/2, 
+                           outer_radius=radius*2)
+    togt_plotter.plot3d_tube(scale=0.5, 
+                             sig_tube=True,
+                             tube_color='blue', 
+                             bias=2*radius, 
+                             inner_radius=radius/2, 
+                             outer_radius=radius*2)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
