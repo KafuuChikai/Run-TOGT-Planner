@@ -8,6 +8,7 @@ from run_togt_planner.RaceVisualizer.track import plot_track, plot_track_3d
 from typing import Union, Optional, Tuple
 import yaml
 from scipy.spatial.distance import cdist
+from mpl_toolkits.mplot3d import Axes3D
 
 import os
 
@@ -198,28 +199,18 @@ class RacePlotter:
              draw_tube: bool = False,
              sig_tube: bool = False,
              tube_color: Optional[str] = None):
-        fig = plt.figure(figsize=(13, 7))
+        fig = plt.figure()
+        ax = plt.gca()
+        self.ax_2d = ax
 
         ps = self.ps
         vt = self.vt
 
         if draw_tube:
-            path_data = []
-            codes = []
-            for i, p in enumerate(ps):
-                if i % 10 == 0:
-                    circle = plt.Circle((p[0], p[1]), 1.0, edgecolor='none', facecolor='none')
-                    vertices = circle.get_path().transformed(circle.get_transform()).vertices
-                    path_data.extend(vertices)
-                    codes.extend([Path.MOVETO] + [Path.LINETO] * (len(vertices) - 2) + [Path.CLOSEPOLY])
-
-            path_data = np.array(path_data)
-            path = Path(path_data, codes)
-
-            if tube_color is None:
-                tube_color = 'purple'
-            patch = PathPatch(path, facecolor=tube_color, edgecolor=tube_color, alpha=0.15)
-            plt.gca().add_patch(patch)
+            if not sig_tube:
+                self.plot_tube(tube_color=tube_color, tube_radius=radius)
+            else:
+                self.plot_tube(sig_tube=sig_tube, tube_color=tube_color, bias=2*radius, inner_radius=radius/2, outer_radius=2*radius, rate=6)
 
         plt.scatter(ps[:, 0], ps[:, 1], s=5,
                     c=vt, cmap=cmap)
@@ -238,6 +229,37 @@ class RacePlotter:
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
             plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
 
+    def plot_tube(self,
+                  scale: float = 1.0,
+                  sig_tube: bool = False,
+                  tube_color: Optional[str] = None,
+                  alpha: float = 0.01,
+                  tube_edge_color: Optional[str] = None,
+                  tube_radius: float = 1.0,
+                  bias: float = 1.0,
+                  inner_radius: float = 0.5,
+                  outer_radius: float = 2.0,
+                  rate: float = 6):
+
+        ax = self.ax_2d
+        ts = self.ts
+        ps = self.ps
+
+        # set tube color
+        if tube_color is None:
+            tube_color = 'purple'
+        if tube_edge_color is None:
+            tube_edge_color = tube_color
+
+        # compute tube coordinates
+        if not sig_tube:
+            tube_x, tube_y, tube_z = self.get_line_tube(ps, tube_radius)
+        else:
+            tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
+
+        # plot tube
+        ax.pcolormesh(tube_x, tube_y, tube_z, shading='auto', cmap='viridis', alpha=alpha)
+
     def plot3d(self,
                cmap: Colormap = plt.cm.winter.reversed(),
                save_fig: bool = False,
@@ -250,7 +272,38 @@ class RacePlotter:
                gate_color: Optional[str] = None,
                tube_color: Optional[str] = None):
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_axes([0, 0, 1, 1], projection='3d')
+
+        # set aspect ratio
+        x_range = self.ps[:, 0].max() - self.ps[:, 0].min()
+        y_range = self.ps[:, 1].max() - self.ps[:, 1].min()
+        z_range = self.ps[:, 2].max() - self.ps[:, 2].min()
+        max_range = max(x_range, y_range, z_range)
+        min_range_factor = 0.33
+        x_range = max(x_range, max_range * min_range_factor)
+        y_range = max(y_range, max_range * min_range_factor)
+        z_range = max(z_range, max_range * min_range_factor)
+        ax.set_box_aspect((x_range, y_range, z_range))
+
+        # compute ticks
+        x_mid = (self.ps[:, 0].min() + self.ps[:, 0].max())/2
+        y_mid = (self.ps[:, 1].min() + self.ps[:, 1].max())/2
+        z_mid = (self.ps[:, 2].min() + self.ps[:, 2].max())/2
+        x_min, x_max = x_mid - x_range/2, x_mid + x_range/2
+        y_min, y_max = y_mid - y_range/2, y_mid + y_range/2
+        z_min, z_max = z_mid - z_range/2, z_mid + z_range/2
+        x_ticks_count = max(min(int(x_range), 5), 2)
+        y_ticks_count = max(min(int(y_range), 5), 2)
+        z_ticks_count = max(min(int(z_range), 5), 2)
+
+        # set ticks
+        ax.set_xticks(np.linspace(x_min, x_max, x_ticks_count))
+        ax.set_yticks(np.linspace(y_min, y_max, y_ticks_count))
+        ax.set_zticks(np.linspace(z_min, z_max, z_ticks_count))
+        ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
+        ax.yaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
+        ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
+
         self.ax_3d = ax
 
         ps = self.ps
