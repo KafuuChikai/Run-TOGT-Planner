@@ -393,3 +393,21 @@ class RacePlotter:
             ax.yaxis.set_major_locator(locator)
         else:  # 'z'
             ax.zaxis.set_major_locator(locator)
+
+    def save_2d_fig(self,
+                 save_path: Union[os.PathLike, str],
+                 fig_name: str):
+        save_path = os.fspath(save_path)
+        os.makedirs(save_path, exist_ok=True)
+        if not fig_name.endswith('.png'):
+            fig_name = fig_name + '.png'
+        self.ax_2d.figure.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+
+    def save_3d_fig(self,
+                 save_path: Union[os.PathLike, str],
+                 fig_name: str):
+        save_path = os.fspath(save_path)
+        os.makedirs(save_path, exist_ok=True)
+        if not fig_name.endswith('.png'):
+            fig_name = fig_name + '.png'
+        self.ax_3d.figure.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')

@@ -61,7 +61,7 @@ def main():
 
     togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
-                      save_fig=True, 
+                      save_fig=False, 
                       fig_name="figure8_2d", 
                       save_path=fig_path,
                       radius=radius,
@@ -74,7 +74,7 @@ def main():
                       alpha=alpha,
                       tube_rate=tube_rate)
     togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
-                        save_fig=True, 
+                        save_fig=False, 
                         fig_name="figure8_3d", 
                         save_path=fig_path,
                         radius=radius,
@@ -103,6 +103,9 @@ def main():
                              outer_radius=radius*2,
                              alpha=0.008,
                              rate=tube_rate)
+    # save the figure
+    togt_plotter.save_2d_fig(fig_name="figure8_2d", save_path=fig_path)
+    togt_plotter.save_3d_fig(fig_name="figure8_3d", save_path=fig_path)
 
     ###### Next track ######
 
@@ -131,7 +134,7 @@ def main():
 
     togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.cool_r,
-                      save_fig=True, 
+                      save_fig=False, 
                       fig_name="race_uzh_19g_2d", 
                       save_path=fig_path,
                       radius=radius,
@@ -144,7 +147,7 @@ def main():
                       alpha=alpha,
                       tube_rate=tube_rate)
     togt_plotter.plot3d(cmap=plt.cm.cool_r,
-                        save_fig=True, 
+                        save_fig=False, 
                         fig_name="race_uzh_19g_3d", 
                         save_path=fig_path,
                         radius=radius,
@@ -173,6 +176,10 @@ def main():
                              outer_radius=radius*2,
                              alpha=0.03,
                              rate=tube_rate)
+    # save the figure
+    togt_plotter.save_2d_fig(fig_name='race_uzh_19g_2d', save_path=fig_path)
+    togt_plotter.save_3d_fig(fig_name='race_uzh_19g_3d', save_path=fig_path)
+
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
