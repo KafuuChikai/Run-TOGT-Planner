@@ -55,39 +55,53 @@ def main():
     run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path)
 
     radius = 0.25
+    alpha = 0.01
+    tube_rate = 10
 
     togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
-                    save_fig=True, 
-                    fig_name="figure8_2d", 
-                    save_path=fig_path,
-                    radius=radius,
-                    margin=0.0,
-                    draw_tube=True,
-                    tube_color='purple', 
-                    sig_tube=True)
+                      save_fig=True, 
+                      fig_name="figure8_2d", 
+                      save_path=fig_path,
+                      radius=radius,
+                      width=2*radius,
+                      height=2*radius,
+                      margin=0.0,
+                      draw_tube=True,
+                      tube_color='purple', 
+                      sig_tube=True,
+                      alpha=alpha,
+                      tube_rate=tube_rate)
     togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
                         save_fig=True, 
                         fig_name="figure8_3d", 
                         save_path=fig_path,
                         radius=radius,
+                        width=2*radius,
+                        height=2*radius,
                         margin=0.0,
                         gate_color='r',
                         draw_tube=True,
                         tube_color='purple',
-                        sig_tube=True)
+                        sig_tube=True,
+                        alpha=alpha,
+                        tube_rate=tube_rate)
     togt_plotter.plot_tube(scale=0.5,
                            sig_tube=True,
                            tube_color='blue', 
                            bias=2*radius, 
                            inner_radius=radius/2, 
-                           outer_radius=radius*2)
+                           outer_radius=radius*2,
+                           alpha=alpha,
+                           rate=tube_rate)
     togt_plotter.plot3d_tube(scale=0.5, 
                              sig_tube=True,
                              tube_color='blue', 
                              bias=2*radius, 
                              inner_radius=radius/2, 
-                             outer_radius=radius*2)
+                             outer_radius=radius*2,
+                             alpha=alpha,
+                             rate=tube_rate)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
