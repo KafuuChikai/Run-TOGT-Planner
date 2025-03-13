@@ -92,20 +92,32 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
     else:
         print(f"{result.stdout}")
 
-def plot_traj(traj_path, track_path, fig_path):
-    togt_plotter = RacePlotter(traj_path, track_path)
+def plot_traj(traj_path, track_path, fig_path, wpt_path):
+    radius = 1.0
+    alpha = 0.1
+    tube_rate = 4
+    sig_tube = False
+    togt_plotter = RacePlotter(traj_path, track_path, wpt_path)
     togt_plotter.plot(cmap=plt.cm.autumn.reversed(),
                       save_fig=True, 
                       fig_name="random_example_2d", 
                       save_path=fig_path,
-                      draw_tube=True)
-    togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
-                      save_fig=True, 
-                      fig_name="random_example_3d", 
-                      save_path=fig_path,
-                      radius=1.0,
+                      radius=radius,
                       margin=0.0,
-                      draw_tube=True)
+                      draw_tube=True,
+                      sig_tube=sig_tube,
+                      alpha=alpha,
+                      tube_rate=tube_rate)
+    togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
+                        save_fig=True, 
+                        fig_name="random_example_3d", 
+                        save_path=fig_path,
+                        radius=radius,
+                        margin=0.0,
+                        draw_tube=True,
+                        sig_tube=sig_tube,
+                        alpha=alpha,
+                        tube_rate=tube_rate)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
@@ -145,4 +157,4 @@ if __name__ == "__main__":
     run_traj_planner(config_path, quad_name, track_file_name, traj_path, wpt_path)
 
     # Step 3: Plot the trajectory
-    plot_traj(traj_path, track_file_name, fig_path)
+    plot_traj(traj_path, track_file_name, fig_path, wpt_path)
