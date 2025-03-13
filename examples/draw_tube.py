@@ -62,7 +62,8 @@ def main():
                     radius=0.25,
                     margin=0.0,
                     draw_tube=True,
-                    tube_color='purple')
+                    tube_color='purple', 
+                    sig_tube=True)
     togt_plotter.plot3d(cmap=plt.cm.autumn.reversed(),
                         save_fig=True, 
                         fig_name="figure8_3d", 
@@ -79,6 +80,12 @@ def main():
                              bias=0.5, 
                              inner_radius=0.125, 
                              outer_radius=0.5)
+    togt_plotter.plot_tube(scale=0.5,
+                           sig_tube=True,
+                           tube_color='blue', 
+                           bias=0.5, 
+                           inner_radius=0.125, 
+                           outer_radius=0.5)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
