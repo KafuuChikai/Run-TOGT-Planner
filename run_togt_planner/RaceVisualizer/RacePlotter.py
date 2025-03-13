@@ -2,13 +2,10 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap
-from matplotlib.patches import PathPatch
-from matplotlib.path import Path
+import matplotlib.ticker as ticker
 from run_togt_planner.RaceVisualizer.track import plot_track, plot_track_3d
 from typing import Union, Optional, Tuple
 import yaml
-from scipy.spatial.distance import cdist
-from mpl_toolkits.mplot3d import Axes3D
 
 import os
 
@@ -199,7 +196,7 @@ class RacePlotter:
              draw_tube: bool = False,
              sig_tube: bool = False,
              tube_color: Optional[str] = None):
-        fig = plt.figure()
+        fig = plt.figure(figsize=(8, 6))
         ax = plt.gca()
         self.ax_2d = ax
 
@@ -258,7 +255,7 @@ class RacePlotter:
             tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
 
         # plot tube
-        ax.pcolormesh(tube_x, tube_y, tube_z, shading='auto', cmap='viridis', alpha=alpha)
+        ax.contourf(tube_x, tube_y, tube_z, colors=[tube_color], alpha=alpha, antialiased=True)
 
     def plot3d(self,
                cmap: Colormap = plt.cm.winter.reversed(),
@@ -271,7 +268,7 @@ class RacePlotter:
                sig_tube: bool = False,
                gate_color: Optional[str] = None,
                tube_color: Optional[str] = None):
-        fig = plt.figure()
+        fig = plt.figure(figsize=(12, 8))
         ax = fig.add_axes([0, 0, 1, 1], projection='3d')
 
         # set aspect ratio
@@ -286,23 +283,14 @@ class RacePlotter:
         ax.set_box_aspect((x_range, y_range, z_range))
 
         # compute ticks
-        x_mid = (self.ps[:, 0].min() + self.ps[:, 0].max())/2
-        y_mid = (self.ps[:, 1].min() + self.ps[:, 1].max())/2
-        z_mid = (self.ps[:, 2].min() + self.ps[:, 2].max())/2
-        x_min, x_max = x_mid - x_range/2, x_mid + x_range/2
-        y_min, y_max = y_mid - y_range/2, y_mid + y_range/2
-        z_min, z_max = z_mid - z_range/2, z_mid + z_range/2
-        x_ticks_count = max(min(int(x_range), 5), 2)
-        y_ticks_count = max(min(int(y_range), 5), 2)
-        z_ticks_count = max(min(int(z_range), 5), 2)
+        x_ticks_count = max(min(int(x_range), 5), 3)
+        y_ticks_count = max(min(int(y_range), 5), 3)
+        z_ticks_count = max(min(int(z_range), 5), 3)
 
         # set ticks
-        ax.set_xticks(np.linspace(x_min, x_max, x_ticks_count))
-        ax.set_yticks(np.linspace(y_min, y_max, y_ticks_count))
-        ax.set_zticks(np.linspace(z_min, z_max, z_ticks_count))
-        ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
-        ax.yaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
-        ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
+        self.set_nice_ticks(ax, x_range, x_ticks_count, 'x')
+        self.set_nice_ticks(ax, y_range, y_ticks_count, 'y')
+        self.set_nice_ticks(ax, z_range, z_ticks_count, 'z')
 
         self.ax_3d = ax
 
@@ -318,15 +306,18 @@ class RacePlotter:
 
         # plot trajectory
         sc = ax.scatter(ps[:, 0], ps[:, 1], ps[:, 2], s=5, c=vt, cmap=cmap)
-        plt.colorbar(sc).ax.set_ylabel('Speed [m/s]')
+        shrink_factor = min(0.8, max(0.6, 0.6 * y_range / x_range))
+        colorbar_aspect = 20 * shrink_factor
+        cbar = plt.colorbar(sc, shrink=shrink_factor, aspect=colorbar_aspect, pad=0.1)
+        cbar.ax.set_ylabel('Speed [m/s]')
 
         plot_track_3d(plt.gca(), self.track_file, radius=radius, margin=margin, color=gate_color)
 
-        plt.xlabel('x [m]')
-        plt.ylabel('y [m]')
+        ax.set_xlabel('x [m]', labelpad=30*(x_range/max_range))
+        ax.set_ylabel('y [m]', labelpad=30*(y_range/max_range))
+        ax.set_zlabel('z [m]', labelpad=30*(z_range/max_range)) 
         plt.axis('equal')
         plt.grid()
-        ax.view_init(elev=90, azim=-90)
 
         if save_fig:
             save_path = os.fspath(save_path) if save_path is not None else os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/")
@@ -363,4 +354,28 @@ class RacePlotter:
             tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
 
         # plot tube
-        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color)
+        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color, shade=False)
+
+    def set_nice_ticks(self, ax, range_val, ticks_count, axis='x'):
+        ticks_interval = range_val / (ticks_count - 1)
+
+        # select base value for major ticks
+        if range_val <= 1:
+            base = round(ticks_interval / 0.1) * 0.1
+        elif range_val <= 5:
+            base = round(ticks_interval / 0.5) * 0.5
+        elif range_val <= 10:
+            base = round(ticks_interval / 1.0) * 1.0
+        else:
+            base = int(max(1.0, round(range_val / 5)))
+        
+        # set locator
+        locator = ticker.MultipleLocator(base)
+        
+        # apply locator
+        if axis == 'x':
+            ax.xaxis.set_major_locator(locator)
+        elif axis == 'y':
+            ax.yaxis.set_major_locator(locator)
+        else:  # 'z'
+            ax.zaxis.set_major_locator(locator)
