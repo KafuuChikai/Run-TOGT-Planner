@@ -1,13 +1,14 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.colors import Colormap
+from matplotlib.colors import Colormap, ListedColormap
 import matplotlib.ticker as ticker
 from run_togt_planner.RaceVisualizer.track import plot_track, plot_track_3d
 from typing import Union, Optional, Tuple
 import yaml
 
 import os
+import warnings
 
 ROOTPATH = os.path.abspath(__file__).split("Run-TOGT-Planner/", 1)[0]
 
@@ -259,7 +260,10 @@ class RacePlotter:
             tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
 
         # plot tube
-        ax.contourf(tube_x, tube_y, tube_z, colors=[tube_color], alpha=alpha, antialiased=True)
+        single_color_map = ListedColormap([tube_color])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            ax.pcolormesh(tube_x, tube_y, tube_z, cmap=single_color_map, shading='auto', color=tube_color, edgecolor='none', alpha=alpha, antialiased=True)
 
     def plot3d(self,
                cmap: Colormap = plt.cm.winter.reversed(),
@@ -362,7 +366,7 @@ class RacePlotter:
             tube_x, tube_y, tube_z = self.get_sig_tube(ts, ps, bias=bias, inner_radius=inner_radius, outer_radius=outer_radius, rate=rate, scale=scale)
 
         # plot tube
-        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color, shade=False)
+        ax.plot_surface(tube_x, tube_y, tube_z, color=tube_color, alpha=alpha, edgecolor=tube_edge_color, shade=False, antialiased=True)
 
     def set_nice_ticks(self, ax, range_val, ticks_count, axis='x'):
         ticks_interval = range_val / (ticks_count - 1)
