@@ -121,9 +121,9 @@ def run_traj_planner(config_path, quad_name, track_path, traj_path, wpt_path):
 def plot_traj(traj_path, track_path):
     togt_plotter = RacePlotter(traj_path, track_path)
     togt_plotter.plot(save_fig=True, fig_name="example_2d", save_path=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/"), 
-                      draw_tube=True, tube_color='green')
+                      radius=0.5, margin=0.0, draw_tube=True, tube_color='green', alpha=0.1)
     togt_plotter.plot3d(save_fig=True, fig_name="example_3d", save_path=os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/"),
-                        radius=0.5, margin=0.0, gate_color='blue', draw_tube=True, tube_color='green')
+                        radius=0.5, margin=0.0, gate_color='blue', draw_tube=True, tube_color='green', alpha=0.05)
     togt_plotter.plot_show()
 
 if __name__ == "__main__":
