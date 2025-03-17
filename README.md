@@ -2,8 +2,8 @@
 
 <table>
   <tr>
-    <td style="width:50%;"><img src="docs/cover/race_uzh_19g_3d.png" alt="example_3d" style="width:100%;"/></td>
-    <td style="width:50%;"><img src="docs/cover/race_uzh_19g_2d.png" alt="race_uzh_19wp_3d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/cover/race_uzh_19g_3d.png" alt="race_uzh_19g_3d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/cover/figure8_3d.png" alt="figure8_3d" style="width:100%;"/></td>
   </tr>
 </table>
 
@@ -103,6 +103,12 @@ python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/examples/plan_race_example.py
 python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/examples/random_race_example.py
 ```
 
+- Show **3D tubes**
+
+```bash
+python ${YOUR_TOGT_PLANNER_PATH}/Run-TOGT-Planner/examples/draw_tube.py
+```
+
 If you want to learn more, refer to [Tools](#Tools).
 
 ## Visualizations
@@ -111,7 +117,9 @@ If you want to learn more, refer to [Tools](#Tools).
 
 You can get a predefined trajectory below:
 
-![plan_race_example](docs/plan_race_example.png)
+<p>
+  <img src="docs/predefined_trajectory/plan_race_example.png" alt="plan_race_example" width="50%" />
+</p>
 
 ### 2. Random trajectories
 
@@ -148,6 +156,20 @@ The random trajectory examples:
     <td style="width:50%;"><img src="docs/3d_tube/random_example_3d.png" alt="random_example_3d" style="width:100%;"/></td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/3d_tube/figure8_2d.png" alt="figure8_2d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/3d_tube/figure8_3d.png" alt="figure8_3d" style="width:100%;"/></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td style="width:50%;"><img src="docs/3d_tube/race_uzh_19g_2d.png" alt="race_uzh_19g_2d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/3d_tube/race_uzh_19g_3d.png" alt="race_uzh_19g_3d" style="width:100%;"/></td>
+  </tr>
+</table>
+
 
 ## Tools
 
