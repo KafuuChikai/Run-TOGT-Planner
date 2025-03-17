@@ -2,8 +2,8 @@
 
 <table>
   <tr>
-    <td style="width:50%;"><img src="docs/cover/example_3d.png" alt="example_3d" style="width:100%;"/></td>
-    <td style="width:50%;"><img src="docs/cover/race_uzh_19wp_3d.png" alt="race_uzh_19wp_3d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/cover/race_uzh_19g_3d.png" alt="example_3d" style="width:100%;"/></td>
+    <td style="width:50%;"><img src="docs/cover/race_uzh_19g_2d.png" alt="race_uzh_19wp_3d" style="width:100%;"/></td>
   </tr>
 </table>
 
