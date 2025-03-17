@@ -3,6 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap, ListedColormap
 import matplotlib.ticker as ticker
+from matplotlib.transforms import Bbox
 from run_togt_planner.RaceVisualizer.track import plot_track, plot_track_3d
 from typing import Union, Optional, Tuple
 import yaml
@@ -190,6 +191,7 @@ class RacePlotter:
     def plot(self,
              cmap: Colormap = plt.cm.winter.reversed(),
              save_fig: bool = False,
+             dpi: int = 300,
              save_path: Union[os.PathLike, str] = None,
              fig_name: Optional[str] = None,
              radius: Optional[float] = None,
@@ -229,7 +231,7 @@ class RacePlotter:
             save_path = os.fspath(save_path) if save_path is not None else os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/")
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
-            plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+            plt.savefig(os.path.join(save_path, fig_name), dpi=dpi, bbox_inches='tight')
 
     def plot_tube(self,
                   scale: float = 1.0,
@@ -268,6 +270,7 @@ class RacePlotter:
     def plot3d(self,
                cmap: Colormap = plt.cm.winter.reversed(),
                save_fig: bool = False,
+               dpi: int = 300,
                save_path: Union[os.PathLike, str] = None,
                fig_name: Optional[str] = None,
                radius: Optional[float] = None,
@@ -336,7 +339,7 @@ class RacePlotter:
             save_path = os.fspath(save_path) if save_path is not None else os.path.join(ROOTPATH, "Run-TOGT-Planner/resources/figure/")
             os.makedirs(save_path, exist_ok=True)
             fig_name = (fig_name + '.png') if fig_name is not None else 'togt_traj.png'
-            plt.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+            plt.savefig(os.path.join(save_path, fig_name), dpi=dpi, bbox_inches='tight')
 
     def plot3d_tube(self,
                     scale: float = 1.0,
@@ -396,18 +399,86 @@ class RacePlotter:
 
     def save_2d_fig(self,
                  save_path: Union[os.PathLike, str],
-                 fig_name: str):
+                 fig_name: str,
+                 dpi: int = 300):
         save_path = os.fspath(save_path)
         os.makedirs(save_path, exist_ok=True)
         if not fig_name.endswith('.png'):
             fig_name = fig_name + '.png'
-        self.ax_2d.figure.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+        self.ax_2d.figure.savefig(os.path.join(save_path, fig_name), dpi=dpi, bbox_inches='tight')
 
     def save_3d_fig(self,
                  save_path: Union[os.PathLike, str],
-                 fig_name: str):
+                 fig_name: str,
+                 dpi: int = 300,
+                 hide_background: bool = False,
+                 hide_ground: bool = False):
         save_path = os.fspath(save_path)
         os.makedirs(save_path, exist_ok=True)
         if not fig_name.endswith('.png'):
             fig_name = fig_name + '.png'
-        self.ax_3d.figure.savefig(os.path.join(save_path, fig_name), bbox_inches='tight')
+
+        if hide_background:
+            fig = self.ax_3d.figure
+            for ax in fig.axes:
+                if hasattr(ax, 'orientation') or ax != self.ax_3d:
+                    fig.delaxes(ax)
+            fig.set_size_inches(12, 8)
+
+            # hide all axis ticks
+            self.ax_3d.set_xticks([])
+            self.ax_3d.set_yticks([])
+            self.ax_3d.set_zticks([])
+            # hide all axis labels
+            self.ax_3d.set_xlabel('')
+            self.ax_3d.set_ylabel('')
+            self.ax_3d.set_zlabel('')
+
+            if not hide_ground:
+                # draw the ground
+                x_min, x_max = self.ax_3d.get_xlim()
+                y_min, y_max = self.ax_3d.get_ylim()
+                z_min, z_max = self.ax_3d.get_zlim()
+                x_center = (x_min + x_max) / 2
+                y_center = (y_min + y_max) / 2
+                x_range = x_max - x_min
+                y_range = y_max - y_min
+                z_range = z_max - z_min
+                # scale the ground
+                scale_factor = 1.5
+                x_min_ground = x_center - (x_range * scale_factor / 2)
+                x_max_ground = x_center + (x_range * scale_factor / 2)
+                y_min_ground = y_center - (y_range * scale_factor / 2)
+                y_max_ground = y_center + (y_range * scale_factor / 2)
+
+                xx, yy = np.meshgrid(np.linspace(x_min_ground, x_max_ground, 15),
+                                    np.linspace(y_min_ground, y_max_ground, 15))
+                zz = np.ones_like(xx) * z_min
+                self.ax_3d.plot_wireframe(xx, yy, zz, color='gray', alpha=0.5, linewidth=1.0)
+
+                self.ax_3d.set_xlim(x_min_ground, x_max_ground)
+                self.ax_3d.set_ylim(y_min_ground, y_max_ground)
+                self.ax_3d.set_box_aspect([x_range * scale_factor, y_range * scale_factor, z_range])
+
+            # set background color to empty
+            self.ax_3d.xaxis.pane.fill = False
+            self.ax_3d.yaxis.pane.fill = False
+            self.ax_3d.zaxis.pane.fill = False
+            # hide pane lines
+            self.ax_3d.xaxis.pane.set_edgecolor('none')
+            self.ax_3d.yaxis.pane.set_edgecolor('none')
+            self.ax_3d.zaxis.pane.set_edgecolor('none')
+
+            self.ax_3d.w_xaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
+            self.ax_3d.w_yaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
+            self.ax_3d.w_zaxis.line.set_color((1.0, 1.0, 1.0, 0.0))
+
+            if hide_ground:
+                bbox = Bbox.from_bounds(1.15, 2.05, 7.5, 3.6)
+                # bbox = Bbox.from_bounds(2.2, 2.6, 6.0, 3.0)
+            else:
+                bbox = Bbox.from_bounds(1.05, 1.45, 8, 4)
+        else:
+            bbox = 'tight'
+        
+        self.ax_3d.figure.savefig(os.path.join(save_path, fig_name), dpi=dpi, bbox_inches=bbox)

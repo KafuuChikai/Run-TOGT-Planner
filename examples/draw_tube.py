@@ -106,6 +106,7 @@ def main():
     # save the figure
     togt_plotter.save_2d_fig(fig_name="figure8_2d", save_path=fig_path)
     togt_plotter.save_3d_fig(fig_name="figure8_3d", save_path=fig_path)
+    # togt_plotter.save_3d_fig(fig_name="figure8_3d", save_path=fig_path, hide_background=True, hide_ground=True)
 
     ###### Next track ######
 
@@ -179,6 +180,7 @@ def main():
     # save the figure
     togt_plotter.save_2d_fig(fig_name='race_uzh_19g_2d', save_path=fig_path)
     togt_plotter.save_3d_fig(fig_name='race_uzh_19g_3d', save_path=fig_path)
+    # togt_plotter.save_3d_fig(fig_name='race_uzh_19g_3d', save_path=fig_path, hide_background=True, hide_ground=True)
 
     togt_plotter.plot_show()
 
